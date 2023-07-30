@@ -763,9 +763,9 @@ The unstructured covariance structure allows for different variances and covaria
 
 
 Where:
-- $\(\sigma_{i}^2\)$ is the variance at time point \(i\).
-- $\(\sigma_{i,j}\)$ is the covariance between time points \(i\) and \(j\).
-- $\(T\)$ is the total number of time points.
+- $\sigma_{i}^2$ is the variance at time point i.
+- $\sigma_{i,j}$ is the covariance between time points i and j.
+- $T$ is the total number of time points.
 
 ---
 
@@ -816,8 +816,8 @@ The autoregressive covariance structure assumes that the correlation between two
 \end{bmatrix}
 
 Where:
-- $\sigma_{i}^2$ is the variance at time point \(i\).
-- $\sigma_{i,j} = \rho \times \sigma_{i-1} \times \sigma_{j-1}$ is the covariance between time points \(i\) and \(j\), with \(\rho\) as the autocorrelation parameter.
+- $\sigma_{i}^2$ is the variance at time point i.
+- $\sigma_{i,j} = \rho \times \sigma_{i-1} \times \sigma_{j-1}$ is the covariance between time points i and j, with $\rho$ as the autocorrelation parameter.
 
 ---
 
@@ -825,18 +825,16 @@ Where:
 
 The autoregressive with heterogeneous variances covariance structure extends the autoregressive structure by allowing different variances at each time point. The covariance matrix Σ is given by:
 
-\[
 \begin{bmatrix}
 \sigma_{1}^2 & \sigma_{1,2} & \dots & \sigma_{1,T} \\
 \sigma_{1,2} & \sigma_{2}^2 & \dots & \sigma_{2,T} \\
 \vdots & \vdots & \ddots & \vdots \\
 \sigma_{1,T} & \sigma_{2,T} & \dots & \sigma_{T}^2
 \end{bmatrix}
-\]
 
 Where:
-- \(\sigma_{i}^2\) is the variance at time point \(i\).
-- \(\sigma_{i,j} = \rho \times \sigma_{i-1} \times \sigma_{j-1}\) is the covariance between time points \(i\) and \(j\), with \(\rho\) as the autocorrelation parameter.
+- $\sigma_{i}^2$ is the variance at time point $i$.
+- $\sigma_{i,j} = \rho \times \sigma_{i-1} \times \sigma_{j-1}$ is the covariance between time points i and j, with $\rho$ as the autocorrelation parameter.
 
 ---
 
