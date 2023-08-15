@@ -44,11 +44,14 @@ xaringanExtra::use_logo(image_url = "Slides/Images/tidyverse.png", width = "95px
 library(xaringanthemer)
 mono_light(
   base_color =  "#151B54", ## OHSU Marquam
+  text_color = "#2F539B",
+ # "#0000A5",
+  base_font_size ="22px",
   code_highlight_color = "#c0e8f5",
   link_color = "#38BDDE",
   background_color = "#FFFFFF",
   header_font_google = google_font("Josefin Sans"),
-  text_font_google   = google_font("Montserrat", "300", "300i","400i","700"),
+  #text_font_google   = google_font("Montserrat", "300", "300i","400i","700"),
   code_font_google   = NULL,
   text_slide_number_color = "#FF0266",
   code_inline_color = "#0000FF",
@@ -2495,6 +2498,7 @@ Where:
 - GEE provides consistent regression coefficient estimates even if the correlation structure is miss-specified.
 
 - A poor choice of working correlation matrix can affect the efficiency of the estimators of $\beta$.
+
 ---
 
 **Sandwich/Robust vs Naive/Purely Model-Based Standard Errors**
@@ -2541,14 +2545,12 @@ Where:
 
 - The major difference between <span style="color:blue">gee</span> and <span style="color:blue">geepack</span> is that <span style="color:blue">geepack</span> contains an <span style="color:blue">ANOVA method</span> that allows us to compare models and perform <span style="color:blue">Wald tests</span>.
 
-**Using Toenail data**
-
-Variables in the data:
-- obs: observation number
-- treat: treatment group (0: Itraconazole (group B); 1: Lamisil (group A))
-- id: subject identification number
-- time: time at which the observation is taken (months)
-- response: the response measured (1: severe infection; 0: no severe infection)
+**Using Toenail data:** Variables in the data:
+- **obs:** observation number
+- **treat:** treatment group (0: Itraconazole (group B); 1: Lamisil (group A))
+- **id:** subject identification number
+- **time:** time at which the observation is taken (months)
+- **response:** the response measured (1: severe infection; 0: no severe infection)
 
 **Research question:** Does treatment have an effect in curing the infection or not?
 
@@ -2581,27 +2583,46 @@ To fit GEE in R, you need the following packages first: **<span style="color:red
 
 ```{r, warning=FALSE, message=FALSE}
 library(geepack)
-fit1 <- geeglm(y ~ treatn + time + treatn*time, id = idnum, data = toenail, 
+library(broom)
+# Fit the GEE models
+fit1 <- geeglm(y ~ treatn + time + treatn*time, id = idnum, data = toenail,
                family = binomial, corstr = "exchangeable", scale.fix = TRUE)
 fit2 <- update(fit1, corstr = "ar1")
 fit3 <- update(fit2, corstr = "unstructured")
-summary(fit1)
+
+# Obtain summary results using broom
+fit1_summary <- tidy(fit1)
+fit2_summary <- tidy(fit2)
+fit3_summary <- tidy(fit3)
+
+# Print or manipulate the customized summaries as needed
+print(fit1_summary)
+```
+---
+```{r}
+print(fit2_summary)
+print(fit3_summary)
+```
+
+```{r}
+broom:::confint.geeglm(fit1)
 ```
 
 ---
 
 ### Choosing the Best Model
+- QIC = quasi-likelihood under the independence model criterion
+- GEE does not use maximum likelihood estimation like GLMM
+- QIC can help select working correlation matrix in GEE
+- MuMIn package calculates this statistic
+
+```{r, message=FALSE, warning=FALSE}
+library(MuMIn)
+QIC(fit1, fit2, fit3)
+```
+
+
 ---
-
-### Random-Effects Models for Discrete Outcomes
-
-- In the previous session, we focused on <span style="color:blue">marginal models (GEE)</span>:
-  
-  - It can be seen as the extension of the marginal models for continuous data.
-
-- In this session, we will see the <span style="color:blue">analogue of linear mixed models for categorical data</span>.
-
-- **Random-effect models:** $E(Y_{ij}) / b_i, x_{ij}$
 
 ### <span style="color:red">Generalized Linear Mixed Models (GLMMs)</span>
 
@@ -2613,35 +2634,26 @@ summary(fit1)
 
   - The categorical longitudinal measurements of a subject are correlated because all of them share the same <span style="color:blue">unobserved random effect</span> (conditional independence assumption).
 
----
-
 - The generic mixed model for $y_{ij}$ is a <span style="color:blue">Mixed-Effects Logistic Regression</span> and has the form:
 
 $$\log\left(\frac{\pi_{i}}{1 - \pi_{i}}\right) = X_{i}\beta + Z_{i}b_{i}, \quad b_{i} \sim \mathcal{N}(0, D)$$
-
 - **<span style="color:red">Random effects</span>** account for between-subject variability.
+
+---
 
 **Three-Part Specification for GLMMs**
 
 <span style="color:blue">**1.**</span> Conditional on the random effects $b_{i}$, the responses $y_{ij}$ are independent and have a Bernoulli distribution with mean $E(y_{ij} / b_{i}) = \pi_{ij}$ and variance $\text{Var}(y_{ij} / b_{i}) = \pi_{ij} (1 - \pi_{ij})$
 
-<span style="color:blue">**2.**</span> The conditional mean of $y_{iii}$ depends upon fixed and random effects via the following expression: 
-$\log\left(\frac{\pi_{ij}}{1 - \pi_{ij}}\right) = x_{i}^T\beta + z_{i}^Tb_{i}$
+<span style="color:blue">**2.**</span> The conditional mean of $y_{ij}$ is given as $\log\left(\frac{\pi_{ij}}{1 - \pi_{ij}}\right) = x_{i}^T\beta + z_{i}^Tb_{i}$
 
-<span style="color:blue">**3.**</span> The random effects follow a multivariate normal distribution with mean zero and variance-covariance matrix $D$.
+<span style="color:blue">**3.**</span> The random effects $\sim N(0, D$.
+
+- The mean and correlation structures are <span style="color:blue">simultaneously defined using random effects</span>.
+    - This has direct and important implications with respect to the interpretation of the parameters!
 
 ---
 
-#### Notes on the Definition of GLMMs
-
-- The three-part specification of GLMMs corresponds to a full specification of the distribution of the outcome $y_{ij}$.
-  
-  - This is in contrast to the GEE approach, which is a <span style="color:blue">semi-parametric method</span>.
-  
-- The mean and correlation structures are <span style="color:blue">simultaneously defined using random effects</span>.
-  
-  - This has direct and important implications with respect to the interpretation of the parameters!
-  
 ### <span style="color:red">Estimation of GLMMs</span>
 
 - The estimation of GLMMs is based on the same principles as in marginal and mixed models for continuous data.
@@ -2662,9 +2674,11 @@ $\log\left(\frac{\pi_{ij}}{1 - \pi_{ij}}\right) = x_{i}^T\beta + z_{i}^Tb_{i}$
 - The log-likelihood expression for GLMMs has the same form as in LMMs:
 $$\ell(\theta) = \sum_{i=1}^n \int p(y_{i} / b_{i}; \theta) p(b_{i}; \theta) db_{i}$$
 where $\theta$ are the parameters of the model.
-- In linear mixed effects models, both terms in the integrand - $p(y_{i} / b_{i}; \theta)$ and $p(b_{i}; \theta)$ - are densities of (multivariate) normal distributions, and also because $y_{i}$ and $b_{i}$ are linearly related.
+- In linear mixed effects models, both terms in the integrand 
+    - $p(y_{i} / b_{i}; \theta)$ and  $p(b_{i}; \theta)$ 
 
-- The integral in the log-likelihood expression has a <span style="color:blue">closed-form solution</span>.
+are densities of (multivariate) normal distributions, and also because $y_{i}$ and $b_{i}$ are linearly related.
+
 
 ---
 
@@ -2686,25 +2700,23 @@ To overcome this problem, two general types of solutions have been proposed:
   - <span style="color:blue">Penalized Quasi Likelihood (PQL)</span>
   - <span style="color:blue">Laplace approximation</span>
 
+---
+
 - **Approximation of the integral:** This entails approximating the whole integral (i.e., $\int p(y_{i} / b_{i}; \theta) p(b_{i}; \theta)$) by a sum:
   - <span style="color:blue">Gaussian Quadrature (GQ) & Adaptive Gaussian Quadrature (AGQ)</span>
   - <span style="color:blue">Monte Carlo & MCMC (Bayesian approach)</span>
 
----
-
-- From the two alternatives, methods that rely on <span style="color:blue">approximation of the integral (GQ, AGQ)</span> have been shown to be superior.
+- From the two alternatives, methods that rely on **<span style="color:red">approximation of the integral (GQ, AGQ) have been shown to be superior</span>**.
 
 - Though they are (much) more computationally demanding, they have a parameter that controls the accuracy of the approximation:
  
-  - In GQ rules, it is the number of quadrature points (nGQ=1) point is equivalent to the Laplace approximation.
+  - **<span style="color:purple">In GQ rules, it is the number of quadrature points (nGQ=1) point is equivalent to the Laplace approximation.</span>**
  
-  - AGQ needs fewer quadrature points than classical GQ but is more time-consuming.
+  - **<span style="color:red">AGQ needs fewer quadrature points than classical GQ but is more time-consuming.</span>**
  
-  - The <span style="color:blue">Laplace approximation</span> is a good choice when dealing with many repeated measures per subject.
+  - **<span style="color:green"> The Laplace approximation is a good choice when dealing with many repeated measures per subject.</span>**
 
-- The higher nGQ (nAGQ), the more accurate the approximation will be.
-
-- For more details on this, refer to Molenberghs and Verbeke (2005, Sections 14.3–14.5).
+- **<span style="color:purple">The higher nGQ (nAGQ), the more accurate the approximation will be.</span>**
 
 ---
 
@@ -2717,29 +2729,12 @@ To overcome this problem, two general types of solutions have been proposed:
   - <span style="color:blue">Empirical Bayes (EB) estimate</span>:
 
     - May be used when interest is in predicting subject-specific evolutions.
-
     - Identifying subjects with outlying evolutions.
-
   - Estimation is based on the posterior distribution of $b_{i}$.
-
   - <span style="color:blue">Posterior mode</span> used as estimate.
 
 - With EB estimates, $\hat{b}_{i}$, subject-specific probability profile:
   $$P(\widehat{Y_{ij} = 1} | b_{i}) = \frac{\exp(X_{ij}\hat{\beta} + Z_{ij}\hat{b}_{i})}{1 + \exp(X_{ij}\hat{\beta} + Z_{ij}\hat{b}_{i})}$$
----
-
-### Interpretation of Parameter Estimates
-
-- For the Linear Mixed Model (LMM): $E(Y_{ij} / b_{i}) = X_{i}\beta + Z_{i}b_{i}$
-  - The <span style="color:blue">marginal expectation</span> $E(Y_{ij}) = E \left(E(Y_{ij} / b_{i})\right) = X_{i}\beta$
-  - $\beta$ in LMMs has both <span style="color:blue">conditional and marginal interpretation</span>.
-
-- For the Generalized Linear Mixed Model (GLMM), this does not hold:
-  - Expectation of the <span style="color:blue">conditional expectation</span> of the GLMM:
-  
-$$E(E(Y_{ij}/b_{i})) = E\left[\frac{\exp(X_{i}\beta + Z_{i}b_{i})}{1 + \exp(X_{i}\beta + Z_{i}b_{i})} \right] \neq \frac{\exp(X_{i}\beta + Z_{i}b_{i})}{1 + \exp(X_{i}\beta + Z_{i}b_{i})}$$
-    
-  - <span style="color:blue">Parameter vector $\beta$ now does not have a marginal interpretation</span>!
 
 ---
 ### Conditional Interpretation of $\beta$ in GLMMs
@@ -2753,22 +2748,25 @@ $$E(E(Y_{ij}/b_{i})) = E\left[\frac{\exp(X_{i}\beta + Z_{i}b_{i})}{1 + \exp(X_{i
   - For example, $e^\beta$ does not have the interpretation of the average Odds Ratio (OR) for a unit increase in follow-up.
 
   - The parameters are **<span style="color:red">conditional on the random effects</span>**.
+- Considers the effect of predictors while accounting for variability between groups due to random effects.
 
 ---
 
 ### GLMMs in R
 
-- Packages: <span style="color:blue">lme4</span> and <span style="color:blue">GLMMadaptive</span>
 
-- The function that fits GLMMs in <span style="color:blue">lme4</span> is `glmer()` – this has similar syntax as the `lmer()` function that fits linear mixed models, namely:
+- **Packages: <span style="color:red">lme4</span> and <span style="color:red">GLMMadaptive</span>**
 
-  - `formula`: a <span style="color:blue">formula</span> specifying the <span style="color:blue">response vector</span>, the <span style="color:blue">fixed- and random-effects structure</span>
+- The function that fits GLMMs in <span style="color:red">lme4</span> is `glmer()` 
+  - this has similar syntax as the `lmer()` function that fits linear mixed models, namely:
 
-  - `data`: a <span style="color:blue">data frame</span> containing all the variables
+  - `formula`: specifying the <span style="color:red">response vector</span>, the <span style="color:red">fixed- and random-effects structure</span>
 
-  - `family`: a <span style="color:blue">family object</span> specifying the <span style="color:blue">distribution of the outcome</span> and the <span style="color:blue">link function</span>
+  - `data`: a <span style="color:red">data frame</span> containing all the variables
 
-  - `nAGQ`: the <span style="color:blue">number of quadrature points</span>
+  - `family`: specifying the <span style="color:red">distribution of the outcome</span> and the <span style="color:red">link function</span>
+
+  - `nAGQ`: the <span style="color:red">number of quadrature points</span>
 
 ---
 
@@ -2783,6 +2781,19 @@ glmmFit <- glmer(y ~ treatn*time + (1 | idnum), family = binomial(),
 summary(glmmFit)
 ```
 ---
+```{r, message=FALSE, warning=FALSE}
+# Extracting fixed effects coefficients and their significance
+coef_summary <- summary(glmmFit)$coefficients
+
+# Extracting variance components for random effects
+variance_components <- VarCorr(glmmFit)
+
+# Print results
+print(coef_summary)
+print(variance_components)
+```
+
+---
 
 ### GLMMs in R: GLMMadaptive
 
@@ -2790,8 +2801,8 @@ summary(glmmFit)
 
 ```{r, message=FALSE, warning=FALSE}
 library(GLMMadaptive)
-glmmFit2 <- mixed_model(y ~ treatn*time, random = ~ 1 | idnum, family = binomial(),
-                        data = toenail, nAGQ = 15)
+glmmFit2 <- mixed_model(y ~ treatn*time, random = ~ 1 | idnum, 
+             family = binomial(), data = toenail, nAGQ = 15)
 summary(glmmFit2)
 ```
 
@@ -2810,40 +2821,82 @@ summary(glmmFit2)
 
 ### Model Building
 
-Model building for <span style="color:blue">GLMMs</span> proceeds in the same manner as for <span style="color:blue">LMMs</span>, i.e.:
+- Model building for <span style="color:blue">GLMMs</span> proceeds in the same manner as for <span style="color:blue">LMMs</span>, i.e.:
 
-- We start with an elaborate specification of the <span style="color:blue">fixed-effects structure</span> that contains all the variables we wish to study, and potential <span style="color:blue">nonlinear</span> and <span style="color:blue">interaction terms</span>.
+- We start with an elaborate specification of 
+ 
+  - the <span style="color:blue">fixed-effects structure</span> that contains all the variables we wish to study, and 
+ 
+  - potential <span style="color:blue">nonlinear</span> and <span style="color:blue">interaction terms</span>.
 
-- Following that, we build up the <span style="color:blue">random-effects structure</span>, starting from <span style="color:blue">random intercepts</span>, and then potentially including <span style="color:blue">random slopes</span>, <span style="color:blue">quadratic slopes</span>, etc.
+- Following that, we build up the <span style="color:blue">random-effects structure</span>, 
+ 
+   - starting from <span style="color:blue">random intercepts</span>, and then potentially 
+ 
+   - including <span style="color:blue">random slopes</span>, <span style="color:blue">quadratic slopes</span>, etc.
 
-- At each step, we perform <span style="color:blue">Likelihood Ratio Tests (LRTs)</span> to determine if including the additional random effect improves the fit of the model.
 
-- After choosing the <span style="color:blue">random-effects structure</span>, we return to the <span style="color:blue">fixed effects</span> and assess whether the specification can be <span style="color:blue">simplified</span>.
+- At each step, we perform **<span style="color:red">Likelihood Ratio Tests (LRTs)</span>** to determine if including the additional random effect improves the fit of the model.
 
-- Once again, we start by testing <span style="color:blue">complex terms</span> (i.e., interactions and nonlinear terms), and then proceed to <span style="color:blue">drop explanatory variables</span> if required.
+---
+### Model Building
+
+- After choosing the <span style="color:blue">random-effects structure</span>, we return to the <span style="color:blue">fixed effects</span> and assess whether the specification can be <span style="color:red">simplified</span>.
+
+- Once again, we start by testing <span style="color:blue">complex terms</span> 
+   - i.e., interactions and nonlinear terms), and 
+   
+   - then proceed to **<span style="color:red">drop explanatory variables</span>** if required.
 
 - In practice, quite often, and especially for <span style="color:blue">dichotomous data</span>, extending the <span style="color:blue">random-effects structure</span> may lead to 
 <span style="color:blue">numerical/computational problems</span>
+
   – This is because <span style="color:blue">dichotomous data</span> contain the least amount of information
 
-- Hence, for <span style="color:blue">dichotomous data</span> and when we have few to moderate 
-number of <span style="color:blue">repeated measurements</span> per subject, we often can only fit 
-<span style="color:blue">random intercepts models</span>
+- Hence, for <span style="color:blue">dichotomous data</span> and when we have few to moderate number of **<span style="color:red">repeated measurements</span>** per subject, we often can only fit **<span style="color:blue">random intercepts models</span>**
 
 ---
-**Summary: GEE**
+### Pros and Cons of GLMMs
 
-<span style="color:blue">Coefficients</span> relating Y to X
-Inference valid in large samples even if distribution of Y and/or <span style="color:blue">variance of Y</span> are incorrectly specified
-Valid inference if data are <span style="color:blue">Missing Completely At Random (MCAR)</span> even if variance model is wrong
+**<span style="color:red"> Advantages</span>**
 
-**GLMM**
+- Possible to have a more complex variance component
+  structures (multi-level models, random regression).
 
-<span style="color:blue">Coefficients</span> relating Y to X <span style="color:blue">conditional on b</span>
-Valid inference generally requires correct specification of distribution of Y and of <span style="color:blue">variance of Y</span>
-Valid inference if data are <span style="color:blue">Missing At Random (MAR)</span>
+- Fully specified models allow for e.g. power calculations.
+
+- Likelihood inference inherently handles data that are missing
+  at random optimally (see lecture 6).
+
+**<span style="color:red"> Drawbacks</span>**
+
+- More model assumptions, thus <span style="color:blue">higher risk of misspecification</span>.
+
+- <span style="color:blue">Impossible to check assumptions about the random effects</span>.
+
+- **Computationally infeasible when the number of random effects or the overall size of the data becomes large.**
+
 ---
-**GEE: The Jimma Infant Data**
+
+### Comparision of GEE and GLMM
+
+**Normally Distributed Outcomes:**
+
+- Variance component model with <span style="color:blue">random intercept</span> is the same
+  as a <span style="color:blue">repeated measurements model</span> with compound symmetry
+  covariance pattern.
+
+**Other-Than-Normal Type Outcomes:**
+
+- <span style="color:red">GEE</span> and <span style="color:red">GLMMs</span> are inherently different statistical methods!
+
+- They differ in <span style="color:red">interpretation</span>.
+
+- They differ in actual figures, i.e. <span style="color:red">estimates</span> and <span style="color:red">SEs</span>.
+
+---
+
+**Comparison using the Jimma Infant Data**
 
 The response variable is categorized body mass index.
 
@@ -2865,77 +2918,52 @@ $Age_{ij}$ is age of the $i^{th}$ infant at time $j$ (also the time variable).
 
 ---
 
-### Fitting GEE model in R
+**Fitting GEE model**
 
-```{r, eval=FALSE}
+- using **unstructured** working corelation
+```{r, message=FALSE}
 fit1 <- geeglm(BMIBIN ~ sex + age + sex * age, id = ind, data = Infant, 
                family = binomial, corstr = "exchangeable", scale.fix = TRUE)
 ```
----
-### GEE Modeling with Different Working Correlation Structures
 
-GEE can be modeled using different working correlation structures:
-
-- <span style="color: blue;">`ar1`</span> for autoregressive order 1
-- <span style="color: blue;">`unstructured`</span> for unstructured working correlation structure
-
-Here's the R code to update GEE models using different correlation structures:
-
-```{r, eval=FALSE}
-fit2 <- geeglm(BMIBIN ~ sex + age + sex * age, id = ind, data = Infant, 
-               family = binomial, corstr = "ar1", scale.fix = TRUE)
-```
-
-```{r, eval=FALSE}
-fit3 <- geeglm(BMIBIN ~ sex + age + sex * age, id = ind, data = Infant, 
-               family = binomial, corstr = "unstructured", scale.fix = TRUE)
-```
-
- - There is no effect of gender, age and gender and age interaction,
-
----
-
-## GLMM: The Jimma Infant Data
-
-A <span style="color:blue">random-effects model</span> for non-Gaussian longitudinal data is applied to the Jimma Infant Data. The following model is assumed for the mean structure:
+**Fitting GLMM model**
 
 - $Y_{ij} | b_i \sim \text{Bernoulli}(\pi_{ij})$, for subject $i$ and measurement $j$,
-- Gaussian distributed random intercepts $b_i$, i.e., $b_i \sim N(0, d)$, can be included to capture the correlation.
+- random intercepts $b_i$, i.e., $b_i \sim N(0, d)$, can be included to capture the correlation.
 
 The logit of $\pi_{ij}$ is modeled as:
 
 $$\text{logit}(\pi_{ij}) =  \color{blue}{\beta_0} + \color{green}{\beta_1 Age_{ij}} + \color{red}{\beta_2 Gender_i} + \color{purple}{\beta_3 Gender_i Age_{ij}} + \color{magenta}{b_i}$$
-
----
-```{r, eval=FALSE}
-# GLMM (random intercept)
+```{r, message=FALSE}
 fitGLMM <- glmer(BMIBIN ~ sex + age + sex * age + (1 | ind),
                  data = Infant, family = binomial(link = "logit"), nAGQ = 25)
-summary(fitGLMM)
-
+#print(round(summary(fitGLMM)$coefficients, 3))
 ```
 
 ---
-### Calculate odds ratio and 95% confidence interval
-```{r, eval=FALSE}
-odds_ratio_ci <- confint(fitGLMM, method = "profile", oldNames = FALSE)
-odds_ratio_ci
-```
 
-### Calculate and display odds ratio and 95% confidence interval
-```{r, eval=FALSE}
-odds_ratio_ci <- exp(confint(fitGLMM, method = "profile", oldNames = FALSE))
-odds_ratio_ci
-```
+### Jimma infant: GEE vs GLMM Estimates
+
+Regression coefficients are highly similar (a mathematical truth).
+GLMM estimates a smaller intercept than GEE.
+
+| Method | Parameter | Estimate (SE) | P-value |
+|--------|-----------|---------------|---------|
+| GEE    | Intercept | -1.869(0.112) | -       |
+|        | Sex       | 1.133 (0.154) | 0.388   |
+|        | age       | 0.001 (0.015) | 0.925   |
+|        | Sex*age   | -0.017 (0.021)| 0.435   |
+| GLMM   | Intercept | -2.333 (0.127)| -       |
+|        | Sex       | 0.159 (0.164) | 0.331   |
+|        | Sex*age   | 0.002 (0.015) | 0.895   |
+|        | Sex*age   | -0.020 (0.021)| 0.333   |
+
+
+- Should we prefer GLMM for this reason?
+
 ---
 
-**R CODE for odds ratio:**
-
-```{r, eval=FALSE}
-exp(cbind(ODDS=coef(fitGLMM), confint(fitGLMM)))
-```
----
-## Model with Random Intercept and Slope
+### Model with Random Intercept and Slope
 
 The model with random intercept and slope can be fitted similarly. The following model is assumed for the mean structure:
 
@@ -2945,21 +2973,47 @@ The model with random intercept and slope can be fitted similarly. The following
 The logit of the probability $\pi_{ij}$ is given by:
 
 $$\text{logit}(\pi_{ij}) = \color{blue}{\beta_0} + \color{green}{\beta_1 Age_{ij}} + \color{orange}{\beta_2 Gender_i} + \color{purple}{\beta_3 Gender_i Age_{ij}} + \color{red}{b_{0i}} + \color{teal}{b_{1i} Age_{ij}}$$
-
-### R CODE for random intercept and slope model:
-```{r, eval=FALSE}
+---
+### Random intercept and slope model:
+```{r, message=FALSE}
 fitGLMMSlope <- glmer(BMIBIN~ sex + age + sex*age + (1+age|ind),
 data = Infant, family = binomial(link = "logit"))
-summary(fitGLMMSlope)
+print(round(summary(fitGLMMSlope)$coefficients, 3))
+# Extracting variance components for random effects
+print(VarCorr(fitGLMMSlope))
 ```
 ---
+
+### Marginal Model or GLMM – Which Should I Prefer?
+
+**Conceptual Differences**
+
+- **<span style="color:blue">Population Risk</span> vs <span style="color:blue">Individual Risk:</span>**
+  - <span style="color:blue">Marginal Model</span> focuses on population-level risk.
+  - <span style="color:blue">GLMM</span> accounts for individual-level risk.
+
+- Choose a Model that Answers Your Scientific Question:
+
+- **<span style="color:cyan">Modeling Differences</span>**
+
+   - Covariance Pattern or Random Effects Model?
+   - **<span style="color:red">GEE</span>** is More Robust Regarding Model Variations:
+   - Choose a Model that is Realistic for Your Data:
+
+- **<span style="color:cyan">Computational Differences</span>**
+
+  - Handling of Missing Data is Easier in **<span style="color:red">GLMMs:</span>**
+  - GLMMs Become Infeasible with Large Data:
+  - GEE Standard Errors are Biased in Small Data:
+  - Choose a Model that Can Handle Your Data:
 
 ---
 class: inverse,  middle
 
 # Day 4: Missing Data Management
 
-* What is missing data – definition, patterns, mechanisms (MCR, MR, NMR)
+* What is missing data 
+   – definition, patterns, mechanisms (MCR, MR, NMR)
 
 * Simple methods for handling missing data
 
@@ -2972,38 +3026,110 @@ class: inverse,  middle
 ## Introduction
 
 - Missing data is very common in statistical analysis. 
-  - is a problem that commonly encounter in research.
 
-- In longitudinal studies, not all individuals are observed at all time points or visits.
+- However, having too much missing data can invalidate a study as it reduces power and precision. 
 
-- Some individuals may be observed only at one time point, or at first two or three, and so on.
-
-- Having too much missing data can invalidate a study because
-
- 1. It reduces statistical power, 
- 
- 2. causes bias in estimation of parameters,
- 
- 3. reduces the representatives of the samples, and 
- 
- 4. it complicates analyses of the studies. 
+- Dealing with missing data requires considering the missing data patterns, mechanisms, and the chosen analytic approach.
 
 ---
 
-## What to consider
+### Sources of Missing Data
 
-- Dealing with missing data requires considering the missing data **patterns**, **mechanisms**, **proportion** and the chosen analytic approach.
+- <span style="color:red">Non-Response:</span> Participants don't provide certain information.
 
-- **Missing Data Pattern**: It is essential to examine the missing data pattern, such as whether it follows a monotone, intermittent, or arbitrary structure. Understanding the pattern can guide the selection of suitable methods.
+- <span style="color:red">Loss to Follow-Up:</span> Participants drop out of a study before completion.
 
-- **Proportion of Missing Data**: The proportion of missing data in the dataset is crucial. High levels of missingness may impact the validity of analyses and may require more sophisticated handling techniques.
+- <span style="color:red">Measurement Error:</span> Errors during data collection lead to missing values.
 
-- **Reasons for Missing Data**: Understanding the reasons why data are missing is critical. Missingness can occur due to various factors like participant dropouts, measurement errors, or system malfunctions. Identifying the reasons can help mitigate potential biases.
+- <span style="color:red">Skip Patterns:</span> Questions skipped based on previous responses.
 
-- ensure robust analyses in longitudinal studies when there is missing data.
+- <span style="color:red">Data Entry Mistakes:</span> Errors during data entry or coding.
+
+- <span style="color:red">Equipment Failure:</span> Instruments or equipment malfunction during data collection.
+
+- <span style="color:red">Sensitive Data:</span> Participants omit sensitive information.
+
+- <span style="color:red">Study Design:</span> Data collection methods inherently result in gaps.
+
+- <span style="color:red">Natural Causes:</span> Unforeseen events impacting data collection.
+
+- <span style="color:red">Processing Errors:</span> Errors during data processing or transformation.
+
 ---
 
-## Missing Data in Longitudinal Studies
+### Implications of Missing Data
+
+**Missing Data Produces/Induces:**
+
+- Loss of information and <span style="color:blue">reduced efficiency.</span>
+
+**Extent of Information Loss Depends on:**
+
+- <span style="color:red">Amount of missingness.</span>
+- <span style="color:red">Missingness pattern.</span>
+- <span style="color:red">Association between the missing and observed data.</span>
+- <span style="color:red">Parameters of interest.</span>
+- <span style="color:red">Method of analysis.</span>
+
+**Care is Needed to Avoid Biased Inferences:**
+
+- Inferences that target a <span style="color:purple">reference population other than intended.</span>
+- For example, <span style="color:purple">those who stay in the study.</span>
+---
+
+### How Much Missing Data is "Problematic"?
+
+Depends on who you ask...
+
+- **Answer #1:**
+  - ANY amount of missing data might be considered problematic.
+
+- **Answer #2:**
+  - It's never "too much."
+  - Optimal methods can easily accommodate up to 50% missing data.
+
+.pull-left[
+- **Answer #3:**
+  - $>5$% (Schafer, 1999)
+  - $>10$% (Bennett, 2001)
+  - $>20$% (Peng, et al., 2006)
+]
+.pull-right[
+- **Answer #4 (Widaman, 2006):**
+  - 1%-2% (Negligible)
+  - 5%-10% (Minor)
+  - 10%-25% (Moderate)
+  - 25%-50% (High)
+  - $>50$% (Excessive)
+]
+
+---
+
+### Common Techniques for Dealing with Missing Data
+
+1. Complete Case Analysis (Listwise deletion)
+2. Available Case Analysis (Pairwise deletion)
+3. Unconditional Mean Imputation (Mean substitution)
+4. Single Imputation (Deterministic Imputation)
+5. Stochastic Imputation
+
+---
+
+### What to Consider
+
+- **<span style="color:red">Dealing with missing data requires considering</span>** **<span style="color:purple">the missing data patterns</span>**, **<span style="color:purple">mechanisms</span>**, **<span style="color:purple">proportion</span>**, and the chosen analytic approach.
+
+- <span style="color:blue">Missing Data Pattern:</span> Examine the missing data pattern,(monotone, intermittent, or arbitrary structure), can guide the selection of suitable methods.
+
+- <span style="color:blue">Proportion of Missing Data:</span> High levels of missingness may impact the validity of analyses and may require more sophisticated handling techniques.
+
+- <span style="color:blue">Reasons for Missing Data:</span> Identifying the reasons can help mitigate potential biases.
+
+- Ensure robust analyses in longitudinal studies when there is missing data.
+
+---
+
+### Missing Data in Longitudinal Studies
 
 
 **Monotone Missing Data Pattern**
@@ -3042,7 +3168,7 @@ The table representing the arbitrary missing data pattern for longitudinal studi
 
 ---
 
-## Types of Missing Data
+### Types of Missing Data
 
 - Looking carefully the causes of missingness enable us to employee the **appropriate missing data management system**.
   - Estimation of the parameter with missing data depends on the missing data mechanism. 
@@ -3057,7 +3183,7 @@ The table representing the arbitrary missing data pattern for longitudinal studi
 
 ---
 
-## 1. Missing Completely at Random (MCAR)
+### 1. Missing Completely at Random (MCAR)
 
 - In MCAR, missingness is assumed to be **<span style="color:red">independent</span> of both observed and unobserved data**.
 
@@ -3096,7 +3222,7 @@ $$p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)$$
 
 ---
 
-## 2. Missing at Random (MAR)
+### 2. Missing at Random (MAR)
 
 - Missingness depends only on observed components $Y^{obs}$, not on missing components $Y^{mis}$.
   - Expressed through the formula:
@@ -3535,96 +3661,6 @@ The missing values have been replaced with the imputed values in the first of th
 
 
 
-
-
-
-
----
-
-## Outline
-
-• What is Missing Data
-   - Definition of Missing Data
-   - Missing Data Patterns
-   - Missing Data Mechanisms
-
-• Simple Ways of Dealing with Missing Data
-
-• Multiple Imputation of Missing Data
----
-
-## Introduction
-
-- Missing data is very common in statistical analysis. 
-
-- However, having too much missing data can invalidate a study as it reduces power and precision. 
-
-- Dealing with missing data requires considering the missing data patterns, mechanisms, and the chosen analytic approach.
-
-**Common Types of Missing Data**
-
-- Survey nonresponse
-- Missing dependent variables
-- Missing covariates
-- Dropouts
-- Censoring - administrative, competing events, LTFU
-- Non-reporting or delayed reporting
-- Non-compliance
-- Measurement error
-
----
-
-## Implications of Missing Data
-
-- Unbalanced data
-
-- Loss of information and reduced inference
-
-- Extent depends on the amount of missing data, missing pattern, mechanism, parameters of interest, and analysis method
-
-- Care is needed to avoid biased inferences
-
-## Missing Data Mechanisms
-
-- Missing Completely At Random (MCAR)
-- Missing At Random (MAR)
-- Missing Not At Random (MNAR)
-
----
-
-### Examples of Missing Data Mechanisms
-
-- Missing Completely At Random (MCAR)
-- Missing At Random (MAR)
-- Missing Not At Random (MNAR)
-
----
-
-## Implications of Missing Data Mechanisms
-
-- Missing Completely At Random (MCAR): Complete Case (CC) analysis is acceptable
-
-- Missing At Random (MAR): No CC; Likelihood-based methods and Generalized Estimating Equations (GEE) are okay
-
-- Missing Not At Random (MNAR): No CC; analysis is difficult - use sensitivity analysis
-
-## Missing Data Patterns for Longitudinal Data
-
-- Monotone/dropout missing data pattern: Missing data after the dropout, common in longitudinal studies
-
-- Intermittent/Arbitrary missing data pattern: Missing data before some non-missing data, common in non-longitudinal studies
-
----
-
-## Common Techniques for Dealing with Missing Data
-
-1. Complete Case Analysis (Listwise deletion)
-2. Available Case Analysis (Pairwise deletion)
-3. Unconditional Mean Imputation (Mean substitution)
-4. Single Imputation (Deterministic Imputation)
-5. Stochastic Imputation
-
----
 
 ## Multiple Imputation
 

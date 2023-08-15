@@ -1,0 +1,26 @@
+---
+title: "Untitled"
+output: word_document
+date: "2023-08-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
+| Method  | Approach                      | Advantages                                        | Limitations                                       |
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
+| mice    | Iterative MICE (Multivariate  | - Flexible for various data types                 | - May not capture complex dependencies            |
+|         | Imputation by Chained         | - Handles complex relationships                   | - Requires careful specification of methods       |
+|         | Equations)                    | - Multiple imputation methods                    | - Convergence criteria                            |
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
+| pan     | Pattern-Mixture Modeling      | - Focuses on patterns of missingness              | - Requires knowledge of patterns                 |
+|         |                               | - Pattern-specific imputation models             | - Limited to reasonable pattern-specific models   |
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
+| mi      | EM Algorithm (Expectation-    | - Handles MCAR and MAR mechanisms                | - May be more complex to set up                  |
+|         | Maximization)                 | - Joint modeling of observed and missing data    | - Computationally demanding for large datasets   |
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
+| amila   | Amputation and Multiple        | - Simplifies imputation process                   | - Imputation quality depends on amputation       |
+|         | Imputation                    | - Works well for certain missing data mechanisms  | - May not perform well for all data types        |
++---------+-------------------------------+---------------------------------------------------+---------------------------------------------------+
