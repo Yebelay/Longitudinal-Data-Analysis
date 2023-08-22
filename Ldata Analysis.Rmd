@@ -179,7 +179,7 @@ The goal of this training is to:
 ##### Repeated measures ... (2)
 
 - Familiar examples of clustered data are families, schools, hospitals, towns, litters, ...
- - In each of these examples, a cluster is a collection of subunits on which observations are made.
+ - In each of these examples, a cluster is a collection of sub units on which observations are made.
 
 - Another form of clustering arises when data are measured repeatedly on the same unit.
 
@@ -342,6 +342,7 @@ Indonesian children’s health study (ICHS)
 ```{r, warning=FALSE, message=FALSE}
 library(readxl)
 Infant <- read_xls("Data/Infant.xls")
+Infant$sex <- factor(Infant$sex, levels= c(1, 0), labels= c("male", "female"))
 ```
 
 ---
@@ -445,26 +446,24 @@ xyplot(income ~ year | sex, psid, type="l", subset=( person < 500),strip=TRUE)
 ```{r, warning=FALSE, message=FALSE, fig.height=4, fig.align='center'}
 library(readr); library(dplyr)
 growth <- read_csv("Data/growth2.csv") 
-  growth$age <- as.factor(growth$age); growth$Sex <- as.factor(growth$sex)
+  growth$age <- as.factor(growth$age); 
+  growth$Sex <- factor(growth$sex, levels= c(1, 2), labels= c("male", "female"))
  growth %>%  xyplot(measure ~ age|Sex, data = ., groups = ind, type = "l",
          xlab ="age",ylab= "distance")
 ```
 
-- Much variability between children.
-- Considerable variability within children.
-- Fixed number of measurements per subject.
-- Measurements taken at fixed time points.
+- Much variability between children and considerable variability within children.
+- Fixed number of measurements per subject and measurements taken at fixed time points.
 
 ---
 
 **The Orthodontic Growth Data: Mean Distance Profile by Sex**
 
-```{r, fig.align='center', fig.height=4}
+```{r, fig.align='center', fig.height=4.5}
 mean1<-tapply(growth$measure, growth$age, mean)
 age1<-as.numeric(unique(growth$age)) %>% sort()
-plot(age1, mean1, type= "l",ylim=c(20,30), xlab="age", 
-     ylab=" The mean distance", lwd=3,
-     main=" The mean profile of the growth data set")
+plot(age1, mean1, type="l",ylim=c(20,30), xlab="age", ylab=" The mean distance", 
+     lwd=3, main=" The mean profile of the growth data set")
 ```
 
 - The relationship between age and distance appears to be linear.
@@ -542,7 +541,7 @@ Conclusion:
 - Suppose it is of interest to study the relation between some response Y and age.
 - A cross-sectional study yields the following data:
 
-```{r, out.width='40%', fig.align='center', echo=FALSE}
+```{r, out.width='38%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/Y_age.png")
 ```
 - Graph suggesting a negative relation between Y and age
@@ -668,7 +667,6 @@ The same response or outcome is measured repeatedly on each unit.
 A statistical model that acknowledges this data structure in which the questions can be formalized and associated specialized methods of analysis based on the model.
 
 - Longitudinal data/studies have become increasingly common and widespread across various scientific disciplines.
-- We will study both classical and more modern approaches to representing and interpreting these data.
 
 **Terminology**
 
@@ -682,6 +680,7 @@ A statistical model that acknowledges this data structure in which the questions
 We consider several applications that exemplify longitudinal data situations and the range of ways data are collected and types of responses and questions of interest.
 
 ---
+
 #### Simple methods
 
 -	Introduction 
@@ -709,7 +708,7 @@ implies that classical techniques can be applied again.
 
 ---
 
-### Overview of frequently used methods
+#### Overview of frequently used methods
 
 - In the case of more than 2 measurements per participant, similar simple techniques are often applied to reduce the number of measurements for the $i^{th}$ participant, from $n_i$ to $1$.
 
@@ -746,7 +745,7 @@ implies that classical techniques can be applied again.
 
 ---
 
-## The sesame Data
+#### The sesame Data
 
 ```{r, out.width='45%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/sesame_prof.png")
@@ -781,6 +780,7 @@ knitr::include_graphics("Image/sesame_area.png")
 ]
 
 ---
+
 #### Mean profile of sesame yield by location
 
 ```{r, out.width='45%', fig.align='center', echo=FALSE}
@@ -801,7 +801,7 @@ knitr::include_graphics("Image/sesame_mean.png")
 - Example: Use the sesame data set to analyze the number of days to maturity using one-sample t-test for each location at each time point.
 
 
-```{r, out.width='45%', fig.align='center', echo=FALSE}
+```{r, out.width='90%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/fig14.png")
 ```
 
@@ -816,7 +816,7 @@ knitr::include_graphics("Image/fig14.png")
 - Performed two-sample t-test, despite having three locations.
 
 
-```{r, out.width='45%', fig.align='center', echo=FALSE}
+```{r, out.width='80%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/fig15.png")
 ```
 - Problem of multiple testing since multiple t-tests are used!
@@ -935,7 +935,7 @@ participant-specific changes: $y_{in_i}-y_{i1}$
 
 ---
 
-## Analysis of covariance
+#### Analysis of covariance
 
 - Another way to analyse endpoints, correcting for differences at baseline, is to use analysis of covariance techniques, where the first measurement is included as covariate in the model.
 
@@ -983,7 +983,7 @@ these disadvantages
 
 ---
 
-#### Exploratory data analysis
+### <span style="color:red">Exploratory data analysis</span>
 
 ##### Introduction
 
@@ -1003,7 +1003,7 @@ However, this may or may not imply a valid marginal model.
 
 ---
 
-#### Exploratory data analysis
+#### Exploratory data analysis.... (2)
 
 Longitudinal data analysis, like other statistical methods, has two components which operate side by side:
 - exploratory and
@@ -1066,11 +1066,12 @@ xyplot(weight ~ factor(age), group = ind, lty=1 ,
 
 The mean profile can be plotted using the following R code:
 
-```{r, message=FALSE, warning=FALSE, fig.width=6, fig.height=4, fig.align='center'}
+```{r, message=FALSE, warning=FALSE, fig.width=6, fig.height=4.5, fig.align='center'}
 mean1<-tapply(Infant$weight, Infant$age, mean, na.rm=T)
 age1<-as.numeric(unique(Infant$age))
-plot(age1, mean1, type= "l", xlab="age", 
-     ylab=" mean weight", lwd=1, main=" The mean profile")
+plot(age1, mean1, type = "l", xlab = "Age", ylab = "Mean Weight", lwd = 2, 
+     main = "The Mean Profile")
+
 ```
 
 ---
@@ -1078,7 +1079,7 @@ plot(age1, mean1, type= "l", xlab="age",
 #### Mean profile by sex
 
 - The mean profiles by sex:
-```{r, message=FALSE, warning=FALSE, fig.width=7, fig.height=4, fig.align='center'}
+```{r, message=FALSE, warning=FALSE, fig.width=7, fig.height=5, fig.align='center'}
 interaction.plot(Infant$age, sex, Infant$weight, fun = mean, 
                  col = c("red", "blue"), xlab = "Age", ylab = "Weight", las = 1)
 ```
@@ -1095,6 +1096,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun = mean,
 - Continuing with the analysis of the <span style="color:blue">Jimma infants</span> data, we see from the individual profiles of these data that a simple linear regression model of <span style="color:red">weight</span> as a function of <span style="color:red">age</span> may be suitable.
 
 ---
+
 #### Jimma infant survival
 
 -The data was fitted this for each subject as follows:
@@ -1106,7 +1108,7 @@ fit
 The formula weight ~ age | ind specifies that we want to model the weight of infants as a function of age, with random intercepts for each individual (ind). This allows us to account for individual variation in weight trajectories over time. 
 ---
 
-### Exploring the Random Effects
+#### Exploring the random effects
 
 - The <span style="color:blue">main purpose</span> of this preliminary analysis is to give an indication
   of <span style="color:blue">what random effects structure</span> to use in the model.
@@ -1124,7 +1126,7 @@ The formula weight ~ age | ind specifies that we want to model the weight of inf
 
 ---
 
-## Exploring the Correlation Structure
+#### Exploring the correlation structure
 
 - In longitudinal data analysis we model two key components of the data:
   - <span style="color:blue">Mean structure</span>
@@ -1140,7 +1142,7 @@ The formula weight ~ age | ind specifies that we want to model the weight of inf
 - After we explore the mean function in the regression, we need to explore the <span style="color:red">correlation structure for the residuals</span>, taking away the mean trend effect.
 ---
 
-### Observed Variance for Jimma dataset
+#### Observed variance for jimma dataset
 
 - Having an appropriate model for studying the evolution of the variance is a very important step in the modeling approach.
 - The observed variance shows an increase in variability over time.
@@ -1154,7 +1156,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun=var, col=2:3, xlab="age",
 ```
 ---
 
-### <span style="color:blue">Growth Data</span>
+#### <span style="color:blue">Growth data</span>
 
 - The distance from the center of the pituitary to the maxillary fissure was recorded at ages <span style="color:red">8, 10, 12, and 14</span>, for <span style="color:purple">11 girls</span> and <span style="color:purple">16 boys</span>.
 
@@ -1178,7 +1180,7 @@ From the exploratory analysis:
 Hence, a linear mean with <span style="color:red">random intercept and slope</span> is a good idea...
 ---
 
-### <span style="color:blue">Exploring the Mean Structure of Growth data</span>
+#### <span style="color:blue">Exploring the mean structure of growth data</span>
 
 For balanced data, averages can be calculated for each occasion separately, and standard errors for the means can be added.
 ```{r, message=FALSE, warning=FALSE, fig.align='center', fig.height=5}
@@ -2435,14 +2437,14 @@ $$D = \begin{pmatrix} d_{11} & 0 \\ 0 & 0 \end{pmatrix},$$ for $d_{11} > 0$, ver
 class: inverse,  middle
 
 
-# Models for Non-Gaussian Longitudinal Data
+## Models for Non-Gaussian Longitudinal Data
  
- * GEE
- * GLMM
+ * Generalized Estimating Equations (GEE)
+ * Generalized Linear Mixed Model (GLMM)
  
 ---
 
-### Recap: Marginal (Population Average) Models:
+#### Recap: Marginal (population average) models:
 
 - Responses are marginalized over all other responses.
 
@@ -2452,7 +2454,7 @@ class: inverse,  middle
 
 - The implied marginal model equals: $$\mathbf{Y}_i \sim \mathcal{N}(\mathbf{X}_i\beta, \mathbf{Z}_iD\mathbf{Z}_i' + \Sigma_i.$$
 
-### Subject-Specific Models:
+#### Subject-specific models:
 
 - If the aim is to study how subjects change overtime and what characteristics influence such changes.
 
@@ -2462,7 +2464,7 @@ $$\mathbf{Y}_i^T \mathbf{b}_i \sim \mathcal{N}(\mathbf{X}_i\beta + \mathbf{Z}_i\
 
 ---
 
-**Recap: Generalized Linear Models**
+**Recap: Generalized linear models**
 
 - LMM have the assumption that the conditional responses are normally distributed.
 
@@ -2479,7 +2481,7 @@ $$\mathbf{Y}_i^T \mathbf{b}_i \sim \mathcal{N}(\mathbf{X}_i\beta + \mathbf{Z}_i\
 
 ---
 
-**Generalized Linear Models**
+**Generalized linear models**
 
 - Suppose we have a dichotomous outcome, Y, measured cross-sectionally.
 $$\log\left(\frac{{\text{odds of success}}}{{1 - \text{odds of success}}}\right) = \log(\pi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}$$
@@ -2530,7 +2532,7 @@ toenail %>% select(time, treatn) %>%
 ```
 
 ---
-**Recap: Generalized Linear Models**
+**Recap: Generalized linear models**
 
 
 ```{r}
@@ -2560,14 +2562,14 @@ length(toenail$y)
 - For non-Gaussian data it is not straightforward to do that because there are no clear multivariate analogues of the univariate distributions
   - we will do something similar, not in the error terms but in the score equations
 
-- Popular alternative approaches, like <span style="color:blue;">Generalized Estimating Equations (GEE)</span>, Alternating Logistic Regression (ALR), and Pseudo-Likelihood (PL) have been formulated.
+- Popular alternative approaches, like <span style="color:blue;">GEEs</span>, Alternating logistic regression (ALR), and Pseudo-likelihood (PL) have been formulated.
 ---
 
-### Generalized Estimating Equations (GEE)
+#### GEE .....(2)
 
 - GEE introduced by Liang and Zeger (Biometrika, 1986) is a <span style="color:blue">best way</span> to model longitudinal data in the marginal modeling framework for categorical responses.
 
-- The parameters of <span style="color:blue">Generalized Linear models</span> are estimated using the maximum likelihood approach.
+- The parameters of <span style="color:blue">GLMs</span> are estimated using the maximum likelihood approach.
 - Key idea: Finding the top of the <span style="color:blue">log-likelihood mountain</span> is equivalent to finding the parameter values for which the slope of the mountain is flat (i.e., zero).
 - The slope of the <span style="color:blue">log-likelihood mountain</span> is given by the score vector:
 
@@ -2590,7 +2592,7 @@ Where:
 
 - This approach follows the same form as the full likelihood procedure but restricts the specification to the first moment only.
 ---
-### Generalized Estimating Equations (GEE)
+#### GEE....(3)
 
 - If the assumed mean structure, $\mu_i$, is correctly specified, then
   $$\hat{\beta} \sim \mathcal{N}(\beta, \text{var}(\hat{\beta}))$$
@@ -2610,7 +2612,7 @@ Where:
 
 **Sandwich/Robust vs Naive/Purely Model-Based Standard Errors**
 
-- Software often also reports the Naive/Model-Based standard errors.
+- Software often also reports the Naive/model-based standard errors.
 - These standard errors assume that the working correlation matrix is correctly specified.
 - The Sandwich/Empirically Corrected/Robust standard errors correct for a possible misspecification of the correlation structure, although at the expense of power.
 - A correct guess ⟹ likelihood variance.
@@ -2717,21 +2719,24 @@ broom:::confint.geeglm(fit1)
 
 ---
 
-### Choosing the Best Model
+#### Choosing the best model
 - QIC = quasi-likelihood under the independence model criterion
+
 - GEE does not use maximum likelihood estimation like GLMM
+
 - QIC can help select working correlation matrix in GEE
+
 - MuMIn package calculates this statistic
 
 ```{r, message=FALSE, warning=FALSE}
-library(MuMIn)
+#library(MuMIn)
 QIC(fit1, fit2, fit3)
 ```
 
 
 ---
 
-### <span style="color:red">Generalized Linear Mixed Models (GLMMs)</span>
+#### <span style="color:red">Generalized Linear Mixed Models (GLMMs)</span>
 
 - <span style="color:blue">GLMMs = GLMs (Logistic, Poisson, etc) with random effects</span>.
 
@@ -2748,7 +2753,7 @@ $$\log\left(\frac{\pi_{i}}{1 - \pi_{i}}\right) = X_{i}\beta + Z_{i}b_{i}, \quad 
 
 ---
 
-**Three-Part Specification for GLMMs**
+**Three-part specification for GLMMs**
 
 <span style="color:blue">**1.**</span> Conditional on the random effects $b_{i}$, the responses $y_{ij}$ are independent and have a Bernoulli distribution with mean $E(y_{ij} / b_{i}) = \pi_{ij}$ and variance $\text{Var}(y_{ij} / b_{i}) = \pi_{ij} (1 - \pi_{ij})$
 
@@ -2761,7 +2766,7 @@ $$\log\left(\frac{\pi_{i}}{1 - \pi_{i}}\right) = X_{i}\beta + Z_{i}b_{i}, \quad 
 
 ---
 
-### <span style="color:red">Estimation of GLMMs</span>
+#### <span style="color:red">Estimation of GLMMs</span>
 
 - The estimation of GLMMs is based on the same principles as in marginal and mixed models for continuous data.
  
@@ -2775,7 +2780,7 @@ $$\log\left(\frac{\pi_{i}}{1 - \pi_{i}}\right) = X_{i}\beta + Z_{i}b_{i}, \quad 
 
 ---
 
-### Log-Likelihood Expression for GLMMs
+#### Log-likelihood expression for GLMMs
 
 - What is the problem?
 - The log-likelihood expression for GLMMs has the same form as in LMMs:
@@ -2827,7 +2832,7 @@ To overcome this problem, two general types of solutions have been proposed:
 
 ---
 
-### Estimation of Random Effects in GLMMs
+#### Estimation of random effects in GLMMs
 
 - Estimation of the random effects proceeds in a similar manner as in linear mixed models.
 
@@ -2844,7 +2849,7 @@ To overcome this problem, two general types of solutions have been proposed:
   $$P(\widehat{Y_{ij} = 1} | b_{i}) = \frac{\exp(X_{ij}\hat{\beta} + Z_{ij}\hat{b}_{i})}{1 + \exp(X_{ij}\hat{\beta} + Z_{ij}\hat{b}_{i})}$$
 
 ---
-### Conditional Interpretation of $\beta$ in GLMMs
+#### Conditional interpretation of $\beta$ in GLMMs
 
 - $\beta$ in GLMMs has a **<span style="color:blue">conditional interpretation</span>**.
 
@@ -2859,7 +2864,7 @@ To overcome this problem, two general types of solutions have been proposed:
 
 ---
 
-### GLMMs in R
+#### GLMMs in R
 
 
 - **Packages: <span style="color:red">lme4</span> and <span style="color:red">GLMMadaptive</span>**
@@ -2877,7 +2882,7 @@ To overcome this problem, two general types of solutions have been proposed:
 
 ---
 
-### GLMMs in R: lme4
+#### GLMMs in R: lme4
 
 - Fits a mixed effects logistic regression for Toenail data with random intercepts and 15 quadrature points for the adaptive Gauss-Hermite rule:
 ---
@@ -2891,7 +2896,7 @@ summary(glmmFit)
 
 ---
 
-### GLMMs in R: GLMMadaptive
+#### GLMMs in R: GLMMadaptive
 
 - The function that fits GLMMs in <span style="color:blue">GLMMadaptive</span> is `mixed_model()`. To fit the same model as we did above with `glmer()`, the code is:
 
@@ -2903,7 +2908,8 @@ summary(glmmFit2)
 ```
 
 ---
-### GLMMs in R
+
+#### GLMMs in R
 
 - Differences between <span style="color:blue">glmer()</span> (package <span style="color:blue">lme4</span>) and <span style="color:blue">mixed_model()</span> (package <span style="color:blue">GLMMadaptive</span>):
 
@@ -2915,7 +2921,7 @@ summary(glmmFit2)
 
 ---
 
-### Model Building
+#### Model building
 
 - Model building for <span style="color:blue">GLMMs</span> proceeds in the same manner as for <span style="color:blue">LMMs</span>, i.e.:
 
@@ -2935,7 +2941,8 @@ summary(glmmFit2)
 - At each step, we perform **<span style="color:red">Likelihood Ratio Tests (LRTs)</span>** to determine if including the additional random effect improves the fit of the model.
 
 ---
-### Model Building
+
+#### Model Building----(2)
 
 - After choosing the <span style="color:blue">random-effects structure</span>, we return to the <span style="color:blue">fixed effects</span> and assess whether the specification can be <span style="color:red">simplified</span>.
 
@@ -2952,7 +2959,8 @@ summary(glmmFit2)
 - Hence, for <span style="color:blue">dichotomous data</span> and when we have few to moderate number of **<span style="color:red">repeated measurements</span>** per subject, we often can only fit **<span style="color:blue">random intercepts models</span>**
 
 ---
-### Pros and Cons of GLMMs
+
+#### Pros and Cons of GLMMs
 
 **<span style="color:red"> Advantages</span>**
 
@@ -2961,8 +2969,7 @@ summary(glmmFit2)
 
 - Fully specified models allow for e.g. power calculations.
 
-- Likelihood inference inherently handles data that are missing
-  at random optimally (see lecture 6).
+- Likelihood inference inherently handles data that are missing at random optimally.
 
 **<span style="color:red"> Drawbacks</span>**
 
@@ -2974,15 +2981,15 @@ summary(glmmFit2)
 
 ---
 
-### Comparision of GEE and GLMM
+#### Comparision of GEE and GLMM
 
-**Normally Distributed Outcomes:**
+**Normally distributed outcomes:**
 
 - Variance component model with <span style="color:blue">random intercept</span> is the same
   as a <span style="color:blue">repeated measurements model</span> with compound symmetry
   covariance pattern.
 
-**Other-Than-Normal Type Outcomes:**
+**Other-than-normal type outcomes:**
 
 - <span style="color:red">GEE</span> and <span style="color:red">GLMMs</span> are inherently different statistical methods!
 
@@ -3038,7 +3045,7 @@ fitGLMM <- glmer(BMIBIN ~ sex + age + sex * age + (1 | ind),
 
 ---
 
-### Jimma infant: GEE vs GLMM Estimates
+#### Jimma infant: GEE vs GLMM Estimates
 
 Regression coefficients are highly similar (a mathematical truth).
 GLMM estimates a smaller intercept than GEE.
@@ -3059,7 +3066,7 @@ GLMM estimates a smaller intercept than GEE.
 
 ---
 
-### Model with Random Intercept and Slope
+#### Model with random intercept and slope
 
 The model with random intercept and slope can be fitted similarly. The following model is assumed for the mean structure:
 
@@ -3070,7 +3077,9 @@ The logit of the probability $\pi_{ij}$ is given by:
 
 $$\text{logit}(\pi_{ij}) = \color{blue}{\beta_0} + \color{green}{\beta_1 Age_{ij}} + \color{orange}{\beta_2 Gender_i} + \color{purple}{\beta_3 Gender_i Age_{ij}} + \color{red}{b_{0i}} + \color{teal}{b_{1i} Age_{ij}}$$
 ---
-### Random intercept and slope model:
+
+#### Random intercept and slope model:
+
 ```{r, message=FALSE}
 fitGLMMSlope <- glmer(BMIBIN~ sex + age + sex*age + (1+age|ind),
 data = Infant, family = binomial(link = "logit"))
@@ -3080,33 +3089,33 @@ print(VarCorr(fitGLMMSlope))
 ```
 ---
 
-### Marginal Model or GLMM – Which Should I Prefer?
+#### Marginal model or GLMM – which should I prefer?
 
-**Conceptual Differences**
+**Conceptual differences**
 
 - **<span style="color:blue">Population Risk</span> vs <span style="color:blue">Individual Risk:</span>**
   - <span style="color:blue">Marginal Model</span> focuses on population-level risk.
   - <span style="color:blue">GLMM</span> accounts for individual-level risk.
 
-- Choose a Model that Answers Your Scientific Question:
+- Choose a model that answers your scientific question:
 
-- **<span style="color:cyan">Modeling Differences</span>**
+- **<span style="color:cyan">Modeling differences</span>**
 
-   - Covariance Pattern or Random Effects Model?
-   - **<span style="color:red">GEE</span>** is More Robust Regarding Model Variations:
-   - Choose a Model that is Realistic for Your Data:
+   - Covariance pattern or random effects model?
+   - **<span style="color:red">GEE</span>** is more robust regarding model variations:
+   - Choose a model that is realistic for your data:
 
-- **<span style="color:cyan">Computational Differences</span>**
+- **<span style="color:cyan">Computational differences</span>**
 
-  - Handling of Missing Data is Easier in **<span style="color:red">GLMMs:</span>**
-  - GLMMs Become Infeasible with Large Data:
-  - GEE Standard Errors are Biased in Small Data:
-  - Choose a Model that Can Handle Your Data:
+  - Handling of missing data is easier in **<span style="color:red">GLMMs:</span>**
+  - GLMMs become infeasible with large Data:
+  - GEE standard errors are biased in small data:
+  - Choose a model that can handle your data:
 
 ---
 class: inverse,  middle
 
-# Day 4: Missing Data Management
+## Day 4: Missing Data Management
 
 * What is missing data 
    – definition, patterns, mechanisms (MCR, MR, NMR)
@@ -3119,7 +3128,7 @@ class: inverse,  middle
 
 ---
 
-### Introduction
+#### Introduction
 
 - **<span style="color:red">Missing data:</span>** Absence of recorded information for certain observations or variables in a dataset.
 
@@ -3133,7 +3142,7 @@ class: inverse,  middle
 
 ---
 
-### Sources of Missing Data
+#### Sources of Missing Data
 
 - <span style="color:red">Non-Response:</span> Participants don't provide certain information.
 
@@ -3157,7 +3166,7 @@ class: inverse,  middle
 
 ---
 
-### Implications of Missing Data
+#### Implications of Missing Data
 
 **Missing Data Produces/Induces:**
 
@@ -3177,7 +3186,7 @@ class: inverse,  middle
 - For example, <span style="color:purple">those who stay in the study.</span>
 ---
 
-### How Much Missing Data is "Problematic"?
+#### How Much Missing Data is "Problematic"?
 
 Depends on who you ask...
 
@@ -3205,21 +3214,21 @@ Depends on who you ask...
 
 ---
 
-### What to Consider
+#### What to Consider
 
 - **<span style="color:red">Dealing with missing data requires considering</span>** **<span style="color:purple">the missing data patterns</span>**, **<span style="color:purple">mechanisms</span>**, **<span style="color:purple">proportion</span>**, and the chosen analytic approach.
 
-- <span style="color:blue">Missing Data Pattern:</span> Examine the missing data pattern,(monotone, intermittent, or arbitrary structure), can guide the selection of suitable methods.
+- <span style="color:blue">Missing data pattern:</span> examine the missing data pattern,(monotone, intermittent, or arbitrary structure), can guide the selection of suitable methods.
 
-- <span style="color:blue">Proportion of Missing Data:</span> High levels of missingness may impact the validity of analyses and may require more sophisticated handling techniques.
+- <span style="color:blue">Proportion of Missing data:</span> High levels of missingness may impact the validity of analyses and may require more sophisticated handling techniques.
 
-- <span style="color:blue">Reasons for Missing Data:</span> Identifying the reasons can help mitigate potential biases.
+- <span style="color:blue">Reasons for missing data:</span> identifying the reasons can help mitigate potential biases.
 
 - Ensure robust analyses in longitudinal studies when there is missing data.
 
 ---
 
-### Missing Data in Longitudinal Studies
+#### Missing Data in Longitudinal Studies
 
 
 **<span style="color:purple">Monotone Missing Data Pattern</span>**
@@ -3260,7 +3269,8 @@ Depends on who you ask...
 | 5     | .     | X     | .     |
 
 ---
-### Comparison:
+
+#### Comparison:
 
 **Data Collection Context:**
 - Monotone: Often observed in longitudinal studies.
@@ -3276,7 +3286,7 @@ Depends on who you ask...
 
 ---
 
-### Types of Missing Data
+#### Types of Missing Data
 
 - Looking carefully the causes of missingness enable us to employee the **appropriate missing data management system**.
 
@@ -3294,7 +3304,7 @@ Depends on who you ask...
 
 ---
 
-### 1. Missing Completely at Random (MCAR)
+#### 1. Missing Completely at Random (MCAR)
 
 - In MCAR, missingness is assumed to be **<span style="color:red">independent</span> of both observed and unobserved data**.
 
@@ -3331,7 +3341,7 @@ $$\color{red}{p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)}$$
 
 ---
 
-### 2. Missing at Random (MAR)
+#### 2. Missing at Random (MAR)
 
 - Missingness depends only on observed components $Y^{obs}$, not on missing components $Y^{mis}$.
   - Expressed through the formula:
@@ -3369,7 +3379,7 @@ Features of <span style="color: red;">MAR</span> include:
 ---
 
 
-### 3. Not Missing at Random (NMAR)
+#### 3. Not Missing at Random (NMAR)
 
 - NMAR suggests that the probability of a value being missing fluctuates for <span style="color:red">reasons unknown to us</span>.
 
@@ -3505,7 +3515,7 @@ summary(model_locf2)
 
 ---
 
-### Mean Imputation in Longitudinal Data
+#### Mean Imputation in Longitudinal Data
 
 - **Mean Imputation**: A <span style="color: blue;">simple method</span> to handle missing values in longitudinal data.
 
@@ -3521,7 +3531,7 @@ summary(model_locf2)
 
 ---
 
-### Example
+#### Example
 
 ```{r}
 library(dplyr)
@@ -3535,7 +3545,7 @@ summary(model_mean_imputed)
 
 ---
 
-## Multiple Imputation
+### Multiple Imputation
 
 - Multiple imputation is a process that is done in 3 main steps: **<span style="color:blue"Imputation, analysis, and pooling.</span>**
 
@@ -3613,7 +3623,7 @@ impdata <- mice::complete(data.mice, action = "long", inc = F)
 
 ---
 
-## Multiple Imputation Software 
+#### Multiple Imputation Software 
 
 - **`Amelia`** in R (by Gary King and collaborators)
 - **`mi`** in R (by Andrew Gelman and collaborators)
