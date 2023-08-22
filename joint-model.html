@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title> Joint Modeling of Longitudinal and Survival Outcomes </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Anteneh Tesema and Yebelay Berehan " />
+    <script src="joint-model_files/header-attrs/header-attrs.js"></script>
+    <link href="joint-model_files/remark-css/default.css" rel="stylesheet" />
+    <link href="joint-model_files/remark-css/rladies-fonts.css" rel="stylesheet" />
+    <script src="joint-model_files/htmlwidgets/htmlwidgets.js"></script>
+    <script src="joint-model_files/plotly-binding/plotly.js"></script>
+    <script src="joint-model_files/typedarray/typedarray.min.js"></script>
+    <script src="joint-model_files/jquery/jquery.min.js"></script>
+    <link href="joint-model_files/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="joint-model_files/crosstalk/js/crosstalk.min.js"></script>
+    <link href="joint-model_files/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="joint-model_files/plotly-main/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+.title[
+# <p><span style="color:white"> Joint Modeling of Longitudinal and Survival Outcomes </span></p>
+]
+.author[
+### <span style="color:#38BDDE"> Anteneh Tesema and Yebelay Berehan </span>
+]
+.institute[
+### <p><span style="font-size: 80%;"> Ethiopian Public Health Institute (EPHI)
+National Data Management Center for Health (NDMC)</span></p>
+]
+.date[
+### <p><span style = 'font-size: 50%;'> August 24-27, 2023</p>
+]
+
+---
+
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 95px;
+height: 95px;
+z-index: 0;
+background-image: url(Slides/Images/tidyverse.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:1em;right:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('div')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = null
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
+
+
+
+
+Exploratory Data Analysis (EDA) for longitudinal data involves 
+  * understanding and analyzing patterns, 
+  * trends, and 
+  * relationships within data that is collected over time from the same subjects or entities. 
+
+- A step-by-step guide to conducting EDA for longitudinal data:
+
+**1. Data Understanding and Preparation:**
+   - Familiarize yourself with the data's structure, including the variables, time points, and units of observation.
+   
+   - Identify missing values, outliers, and potential data quality issues. Consider how missing data might affect your analysis and choose appropriate strategies to handle it.
+   - Organize the data in a format that facilitates analysis, such as a wide or long format.
+
+---
+
+**2. Visualization:**
+   - Use line plots or scatter plots to visualize the trajectory of each subject/entity over time. This can help identify overall trends, fluctuations, and potential outliers.
+   - Create a time series plot to observe how the variables change over time for individual subjects.
+   - Construct box plots or violin plots to visualize the distribution of measurements at different time points.
+   - Create heatmaps to visualize correlations between different time points.
+
+**3. Descriptive Statistics:**
+   - Calculate summary statistics (mean, median, standard deviation, etc.) for each time point to understand central tendencies and variability.
+   - Compute descriptive statistics separately for different groups or conditions if relevant.
+
+**4. Trends and Patterns:**
+   - Identify trends, cycles, or patterns in the data. Look for increasing, decreasing, or cyclic behaviors over time.
+   - Consider using moving averages or other smoothing techniques to visualize underlying trends.
+
+**5. Comparisons:**
+   - Compare groups or conditions to see how they differ in terms of their trajectories over time.
+   - Conduct subgroup analysis to explore whether different subgroups exhibit distinct patterns.
+
+---
+
+**6. Correlation and Causation:**
+   - Explore correlations between variables at different time points. Use correlation matrices or scatter plots to visualize these relationships.
+   - Be cautious about inferring causation from correlations, as other factors could be at play.
+
+**7. Modeling and Forecasting:**
+   - Consider time series modeling techniques to capture and forecast the underlying patterns in the data.
+   - Techniques like autoregressive integrated moving average (ARIMA), exponential smoothing, or more advanced models like state space models can be useful.
+
+**8. Change Point Detection:**
+   - Use change point detection methods to identify shifts in the trajectory of the data. This can be especially useful when analyzing longitudinal data to identify when significant changes occur.
+
+**9. Interactive Visualization:**
+   - Consider using interactive visualization tools to allow users to explore the data more dynamically. Tools like Plotly or Tableau can be helpful.
+
+**10. Domain Knowledge Integration:**
+   - Incorporate your domain knowledge to interpret the findings and validate the insights derived from the EDA.
+
+---
+
+Remember, longitudinal data analysis requires careful consideration of the temporal nature of the data and the potential biases and challenges associated with it. 
+
+- Always tailor your EDA techniques to the specific characteristics of your data and research objectives.
+
+---
+
+- Let's work with the **sleepstudy** dataset available in the "lme4" package. 
+
+- This dataset contains information about reaction times for subjects in a sleep deprivation study. 
+
+- We'll use this dataset to perform some exploratory data analysis (EDA) steps for longitudinal data analysis.
+
+
+```r
+# Load necessary libraries
+library(lme4)
+library(ggplot2)
+library(dplyr)
+
+# Load the sleepstudy dataset
+data("sleepstudy")
+sleep_data &lt;- sleepstudy
+# Step 1: Data Understanding and Preparation
+# The sleepstudy dataset includes 'Subject', 'Days', and 'Reaction' columns
+```
+
+---
+
+
+```r
+# Line plot for individual subject's reaction time trajectory over days
+ggplot(sleep_data, aes(x = Days, y = Reaction, color = factor(Subject))) +
+  geom_line() +
+  labs(x = "Days", y = "Reaction Time", title = "Reaction Time Over Days")
+```
+
+&lt;img src="joint-model_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+- Line Plot: The line plot of individual subject's reaction time trajectory over days shows how reaction times change over the study period. 
+- Some subjects appear to have a decreasing trend in reaction time, while others show fluctuations.
+---
+
+
+```r
+# Box plot to visualize the distribution of reaction times at different days
+ggplot(sleep_data, aes(x = factor(Days), y = Reaction)) +
+  geom_boxplot() +
+  labs(x = "Days", y = "Reaction Time", title = "Distribution of Reaction Times")
+```
+
+&lt;img src="joint-model_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+- Box Plot: The box plot provides a visual summary of the distribution of reaction times at different days. 
+   - It highlights the central tendency, spread, and potential outliers in the data.
+---
+
+```r
+# Summary statistics for each day
+summary_by_day &lt;- sleep_data %&gt;%
+  group_by(Days) %&gt;%
+  summarize(mean_reaction = mean(Reaction),
+            median_reaction = median(Reaction),
+            sd_reaction = sd(Reaction))
+summary_by_day
+```
+
+```
+## # A tibble: 10 × 4
+##     Days mean_reaction median_reaction sd_reaction
+##    &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;       &lt;dbl&gt;
+##  1     0          257.            253.        32.1
+##  2     1          264.            273.        33.4
+##  3     2          265.            264.        29.5
+##  4     3          283.            281.        38.9
+##  5     4          289.            282.        42.5
+##  6     5          309.            307.        51.8
+##  7     6          312.            294.        63.2
+##  8     7          319.            333.        50.1
+##  9     8          337.            336.        60.2
+## 10     9          351.            365.        67.0
+```
+
+```r
+with(sleep_data,tapply(Reaction,list(Days),mean,na.rm=TRUE))
+```
+
+```
+##        0        1        2        3        4        5        6        7 
+## 256.6518 264.4958 265.3619 282.9920 288.6494 308.5185 312.1783 318.7506 
+##        8        9 
+## 336.6295 350.8512
+```
+
+- The summary statistics by day reveal the average, median, and standard deviation of reaction times on each day. These statistics give an overview of the data's central tendency and variability over time.
+
+---
+
+```r
+# Trend line using moving average
+sleep_data %&gt;%
+  group_by(Subject) %&gt;%
+  arrange(Days) %&gt;%
+  mutate(moving_avg = zoo::rollmean(Reaction, k = 5, fill = NA, align = "right")) %&gt;%
+  ggplot(aes(x = Days, y = moving_avg, color = factor(Subject))) +
+  geom_line() +
+  labs(x = "Days", y = "Moving Average Reaction Time", title = "Moving Average Reaction Time")
+```
+
+&lt;img src="joint-model_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+- Trend Line: The moving average trend line for individual subjects smoothes out the fluctuations in reaction time and highlights potential trends. 
+- It helps identify general patterns in reaction time changes over days.
+
+---
+
+
+```r
+# Comparing reaction time trajectories between different subjects
+ggplot(sleep_data, aes(x = Days, y = Reaction, color = factor(Subject))) +
+  geom_line() +
+  labs(x = "Days", y = "Reaction Time", title = "Reaction Time Comparison by Subject")
+```
+
+&lt;img src="joint-model_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+- Reaction Time Comparison: The comparison of reaction time trajectories between different subjects helps identify variations in the way subjects respond to sleep deprivation. Some subjects might be more affected than others.
+
+---
+
+
+```r
+# Using Plotly for interactive line plot
+library(plotly)
+plot_ly(sleep_data, x = ~Days, y = ~Reaction, color = ~factor(Subject), type = "scatter", mode = "lines")
+```
+
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f9b9f8e6a1f360c4c129" style="width:504px;height:360px;"></div>
+<script type="application/json" data-for="htmlwidget-f9b9f8e6a1f360c4c129">{"x":{"visdat":{"f7f05aa536de":["function () ","plotlyVisDat"]},"cur_data":"f7f05aa536de","attrs":{"f7f05aa536de":{"x":{},"y":{},"mode":"lines","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Days"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Reaction"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[0,1,2,3,4,5,6,7,8,9],"y":[249.56,258.7047,250.8006,321.43979999999999,356.8519,414.69009999999997,382.2038,290.14859999999999,430.58530000000002,466.3535],"mode":"lines","type":"scatter","name":"308","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[222.73390000000001,205.26580000000001,202.9778,204.70699999999999,207.71610000000001,215.96180000000001,213.63030000000001,217.72720000000001,224.29570000000001,237.3142],"mode":"lines","type":"scatter","name":"309","marker":{"color":"rgba(181,176,137,1)","line":{"color":"rgba(181,176,137,1)"}},"textfont":{"color":"rgba(181,176,137,1)"},"error_y":{"color":"rgba(181,176,137,1)"},"error_x":{"color":"rgba(181,176,137,1)"},"line":{"color":"rgba(181,176,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[199.0539,194.3322,234.31999999999999,232.8416,229.3074,220.4579,235.42080000000001,255.75110000000001,261.01249999999999,247.5153],"mode":"lines","type":"scatter","name":"310","marker":{"color":"rgba(233,153,110,1)","line":{"color":"rgba(233,153,110,1)"}},"textfont":{"color":"rgba(233,153,110,1)"},"error_y":{"color":"rgba(233,153,110,1)"},"error_x":{"color":"rgba(233,153,110,1)"},"line":{"color":"rgba(233,153,110,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[321.54259999999999,300.40019999999998,283.85649999999998,285.13299999999998,285.79730000000001,297.58550000000002,280.2396,318.26130000000001,305.34949999999998,354.0487],"mode":"lines","type":"scatter","name":"330","marker":{"color":"rgba(232,146,123,1)","line":{"color":"rgba(232,146,123,1)"}},"textfont":{"color":"rgba(232,146,123,1)"},"error_y":{"color":"rgba(232,146,123,1)"},"error_x":{"color":"rgba(232,146,123,1)"},"line":{"color":"rgba(232,146,123,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[287.60789999999997,285,301.82060000000001,320.11529999999999,316.27730000000003,293.31869999999998,290.07499999999999,334.8177,293.74689999999998,371.58109999999999],"mode":"lines","type":"scatter","name":"331","marker":{"color":"rgba(191,154,166,1)","line":{"color":"rgba(191,154,166,1)"}},"textfont":{"color":"rgba(191,154,166,1)"},"error_y":{"color":"rgba(191,154,166,1)"},"error_x":{"color":"rgba(191,154,166,1)"},"line":{"color":"rgba(191,154,166,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[234.86060000000001,242.81180000000001,272.96129999999999,309.7688,317.46289999999999,309.99759999999998,454.1619,346.83109999999999,330.30029999999999,253.86439999999999],"mode":"lines","type":"scatter","name":"332","marker":{"color":"rgba(147,159,203,1)","line":{"color":"rgba(147,159,203,1)"}},"textfont":{"color":"rgba(147,159,203,1)"},"error_y":{"color":"rgba(147,159,203,1)"},"error_x":{"color":"rgba(147,159,203,1)"},"line":{"color":"rgba(147,159,203,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[283.8424,289.55500000000001,276.76929999999999,299.80970000000002,297.17099999999999,338.16649999999998,332.0265,348.8399,333.36000000000001,362.0428],"mode":"lines","type":"scatter","name":"333","marker":{"color":"rgba(187,151,199,1)","line":{"color":"rgba(187,151,199,1)"}},"textfont":{"color":"rgba(187,151,199,1)"},"error_y":{"color":"rgba(187,151,199,1)"},"error_x":{"color":"rgba(187,151,199,1)"},"line":{"color":"rgba(187,151,199,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[265.47309999999999,276.20119999999997,243.3647,254.67230000000001,279.02440000000001,284.19119999999998,305.52480000000003,331.52289999999999,335.74689999999998,377.29899999999998],"mode":"lines","type":"scatter","name":"334","marker":{"color":"rgba(222,141,196,1)","line":{"color":"rgba(222,141,196,1)"}},"textfont":{"color":"rgba(222,141,196,1)"},"error_y":{"color":"rgba(222,141,196,1)"},"error_x":{"color":"rgba(222,141,196,1)"},"line":{"color":"rgba(222,141,196,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[241.60830000000001,273.94720000000001,254.4907,270.8021,251.45189999999999,254.6362,245.45230000000001,235.31100000000001,235.75409999999999,237.2466],"mode":"lines","type":"scatter","name":"335","marker":{"color":"rgba(217,164,165,1)","line":{"color":"rgba(217,164,165,1)"}},"textfont":{"color":"rgba(217,164,165,1)"},"error_y":{"color":"rgba(217,164,165,1)"},"error_x":{"color":"rgba(217,164,165,1)"},"line":{"color":"rgba(217,164,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[312.36660000000001,313.80579999999998,291.6112,346.12220000000002,365.73239999999998,391.83850000000001,404.26010000000002,416.69229999999999,455.86430000000001,458.91669999999999],"mode":"lines","type":"scatter","name":"337","marker":{"color":"rgba(191,196,121,1)","line":{"color":"rgba(191,196,121,1)"}},"textfont":{"color":"rgba(191,196,121,1)"},"error_y":{"color":"rgba(191,196,121,1)"},"error_x":{"color":"rgba(191,196,121,1)"},"line":{"color":"rgba(191,196,121,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[236.10319999999999,230.3167,238.9256,254.922,250.71029999999999,269.77440000000001,281.56479999999999,308.10199999999998,336.28059999999999,351.64510000000001],"mode":"lines","type":"scatter","name":"349","marker":{"color":"rgba(178,216,80,1)","line":{"color":"rgba(178,216,80,1)"}},"textfont":{"color":"rgba(178,216,80,1)"},"error_y":{"color":"rgba(178,216,80,1)"},"error_x":{"color":"rgba(178,216,80,1)"},"line":{"color":"rgba(178,216,80,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[256.29680000000002,243.45429999999999,256.20460000000003,255.52709999999999,268.91649999999998,329.72469999999998,379.44450000000001,362.91840000000002,394.48719999999997,389.05270000000002],"mode":"lines","type":"scatter","name":"350","marker":{"color":"rgba(215,217,67,1)","line":{"color":"rgba(215,217,67,1)"}},"textfont":{"color":"rgba(215,217,67,1)"},"error_y":{"color":"rgba(215,217,67,1)"},"error_x":{"color":"rgba(215,217,67,1)"},"line":{"color":"rgba(215,217,67,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[250.5265,300.05759999999998,269.89389999999997,280.58909999999997,271.82740000000001,304.6336,287.7466,266.59550000000002,321.54180000000002,347.56549999999999],"mode":"lines","type":"scatter","name":"351","marker":{"color":"rgba(250,217,50,1)","line":{"color":"rgba(250,217,50,1)"}},"textfont":{"color":"rgba(250,217,50,1)"},"error_y":{"color":"rgba(250,217,50,1)"},"error_x":{"color":"rgba(250,217,50,1)"},"line":{"color":"rgba(250,217,50,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[221.6771,298.19389999999999,326.87849999999997,346.85550000000001,348.74020000000002,352.82870000000003,354.42660000000001,360.43259999999998,375.64060000000001,388.54169999999999],"mode":"lines","type":"scatter","name":"352","marker":{"color":"rgba(247,209,91,1)","line":{"color":"rgba(247,209,91,1)"}},"textfont":{"color":"rgba(247,209,91,1)"},"error_y":{"color":"rgba(247,209,91,1)"},"error_x":{"color":"rgba(247,209,91,1)"},"line":{"color":"rgba(247,209,91,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[271.92349999999999,268.43689999999998,257.24239999999998,277.65660000000003,314.82220000000001,317.21350000000001,298.13529999999997,348.12290000000002,340.27999999999997,366.51310000000001],"mode":"lines","type":"scatter","name":"369","marker":{"color":"rgba(236,201,129,1)","line":{"color":"rgba(236,201,129,1)"}},"textfont":{"color":"rgba(236,201,129,1)"},"error_y":{"color":"rgba(236,201,129,1)"},"error_x":{"color":"rgba(236,201,129,1)"},"line":{"color":"rgba(236,201,129,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[225.26400000000001,234.52350000000001,238.9008,240.47300000000001,267.53730000000002,344.19369999999998,281.1481,347.58550000000002,365.16300000000001,372.22879999999998],"mode":"lines","type":"scatter","name":"370","marker":{"color":"rgba(221,193,154,1)","line":{"color":"rgba(221,193,154,1)"}},"textfont":{"color":"rgba(221,193,154,1)"},"error_y":{"color":"rgba(221,193,154,1)"},"error_x":{"color":"rgba(221,193,154,1)"},"line":{"color":"rgba(221,193,154,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[269.88040000000001,272.44279999999998,277.89890000000003,281.78949999999998,279.1705,284.512,259.26580000000001,304.63060000000002,350.78070000000002,369.4692],"mode":"lines","type":"scatter","name":"371","marker":{"color":"rgba(201,186,167,1)","line":{"color":"rgba(201,186,167,1)"}},"textfont":{"color":"rgba(201,186,167,1)"},"error_y":{"color":"rgba(201,186,167,1)"},"error_x":{"color":"rgba(201,186,167,1)"},"line":{"color":"rgba(201,186,167,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9],"y":[269.4117,273.47399999999999,297.59679999999997,310.63159999999999,287.17259999999999,329.60759999999999,334.48180000000002,343.2199,369.14170000000001,364.12360000000001],"mode":"lines","type":"scatter","name":"372","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"line":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+- Interactive Line Plot: The interactive line plot using Plotly allows users to explore the reaction time data for each subject over days more dynamically. 
+- Users can hover over points to see specific values.
+
+---
+
+- Exploratory Data Analysis (EDA) can guide you in choosing appropriate models for analyzing longitudinal data, such as linear mixed models or marginal models. 
+
+- EDA helps you understand the underlying patterns, trends, and characteristics of the data, which can inform your decision-making process when selecting a suitable modeling approach. 
+
+- Here's how EDA can influence your choice of models:
+
+**1. Identifying Patterns and Trends:**
+
+- EDA can reveal whether there are consistent patterns and trends in the data across time points or within subjects. 
+
+- If there are clear trends or patterns, a linear mixed-effects model might be appropriate to capture both fixed effects (population-level trends) and random effects (individual variations).
+---
+
+**2. Variability and Correlations:**
+- EDA can help you understand the variability in response within and between subjects. 
+
+- If there is significant variability between subjects and possible correlations within subjects, a linear mixed-effects model can account for these variations through random effects.
+
+**3. Group Comparisons:**
+- If your EDA shows distinct trajectories or group differences, a linear mixed-effects model can incorporate interaction terms to capture how different groups respond differently over time.
+
+---
+
+**4. Repeated Measures and Time Dependency:**
+- EDA can highlight the extent of time dependency and autocorrelation in the data. 
+- If measurements at different time points are correlated, it suggests the use of models that account for time dependencies, such as linear mixed-effects models.
+
+**5. Model Flexibility:**
+- If your EDA shows complex non-linear relationships or varying slopes over time, more flexible models such as nonlinear mixed-effects models might be considered.
+
+---
+
+**6. Handling Missing Data:**
+- EDA can reveal patterns of missing data. 
+- If missing data is correlated with certain variables or time points, it's important to choose a model that can handle missing data appropriately.
+
+**7. Model Assumptions:**
+- EDA can provide insights into the distribution of residuals, helping you assess whether model assumptions (e.g., normality, homoscedasticity) are met. 
+- If assumptions are violated, you might need to consider transformations or alternative models.
+
+---
+
+**8. Trade-offs between Complexity and Interpretability:**
+- Based on your EDA, you can evaluate the trade-offs between model complexity and interpretability. 
+- More complex models might fit the data better but could be harder to interpret.
+
+In summary, EDA guides your choice of models by helping you understand the data's structure, patterns, and relationships. Linear mixed-effects models are often preferred for longitudinal data due to their ability to handle correlated observations, individual variations, and repeated measures. However, the decision also depends on your research objectives, the assumptions of the models, and your familiarity with the chosen modeling approach. EDA provides a crucial foundation for making informed decisions in selecting the most appropriate modeling strategy for your longitudinal data analysis.
+
+---
+
+
+```r
+# Load necessary libraries
+library(lme4)
+library(GGally)
+```
+
+```
+## Warning: package 'GGally' was built under R version 4.3.1
+```
+
+```
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+```
+
+```r
+# Load the sleepstudy dataset
+data("sleepstudy")
+sleep_data &lt;- sleepstudy
+
+# Create a scatter plot matrix
+scatterplot_matrix &lt;- ggpairs(sleep_data, columns = c("Days", "Reaction"),
+                               lower = list(continuous = wrap("points")),
+                               upper = list(continuous = wrap("cor", method = "pearson")))
+
+# Display the scatter plot matrix
+print(scatterplot_matrix)
+```
+
+![](joint-model_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+
+```r
+# Load necessary libraries
+library(lme4)
+library(tidyr)
+```
+
+```
+## 
+## Attaching package: 'tidyr'
+```
+
+```
+## The following objects are masked from 'package:Matrix':
+## 
+##     expand, pack, unpack
+```
+
+```r
+# Load the sleepstudy dataset
+data("sleepstudy")
+sleep_data &lt;- sleepstudy
+
+# Reshape the data using pivot_wider
+reshaped_data &lt;- sleep_data %&gt;%
+  pivot_wider(names_from = Days, values_from = Reaction, names_prefix = "Day_")
+
+# Display the reshaped data
+head(reshaped_data)
+```
+
+```
+## # A tibble: 6 × 11
+##   Subject Day_0 Day_1 Day_2 Day_3 Day_4 Day_5 Day_6 Day_7 Day_8 Day_9
+##   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 308      250.  259.  251.  321.  357.  415.  382.  290.  431.  466.
+## 2 309      223.  205.  203.  205.  208.  216.  214.  218.  224.  237.
+## 3 310      199.  194.  234.  233.  229.  220.  235.  256.  261.  248.
+## 4 330      322.  300.  284.  285.  286.  298.  280.  318.  305.  354.
+## 5 331      288.  285   302.  320.  316.  293.  290.  335.  294.  372.
+## 6 332      235.  243.  273.  310.  317.  310.  454.  347.  330.  254.
+```
+
+```r
+attach(sleepstudy)
+d1&lt;-Reaction[Days==0]
+d2&lt;-Reaction[Days==1]
+d3&lt;-Reaction[Days==2]
+d4&lt;-Reaction[Days==3]
+d5&lt;-Reaction[Days==4]
+d6&lt;-Reaction[Days==5]
+d7&lt;-Reaction[Days==6]
+d8&lt;-Reaction[Days==7]
+d9&lt;-Reaction[Days==8]
+d10&lt;-Reaction[Days==9]
+response1&lt;-cbind(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10)
+df &lt;- as.data.frame(response1)
+df %&gt;% ggpairs(.,
+               columns = 2:4, 
+               diag = list(continuous = wrap("barDiag", bins = 10, fill = "cyan")))
+```
+
+![](joint-model_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+```r
+               #lower = list(continuous = wrap(lower_plots, color="red", se=F))) 
+```
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"ratio": "14:9",
+"highlightSpans": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

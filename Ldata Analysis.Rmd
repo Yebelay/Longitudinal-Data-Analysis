@@ -1,15 +1,15 @@
 ---
 title: |
-     <span style="color:white"> Longitudinal Analysis Workshop </span>
+     <span style="color:white"> Longitudinal Data Analysis </span>
 
-author: <span style="color:#38BDDE"> Anteneh Tesema and Yebelay Berehan </span>
+author: <span style="color:#38BDDE"> Anteneh Tessema and Yebelay Berehan </span>
   
 institute: |
            <span style = 'font-size: 80%;'>  Ethiopian Public Health Institute (EPHI) 
            National Data Management Center for Health (NDMC)</span>
            
 date: |
-      <span style = 'font-size: 50%;'> `r Sys.Date()`
+      <span style = 'font-size: 50%;'> August 24-27, 2023
       
 output:
   xaringan::moon_reader:
@@ -52,7 +52,8 @@ mono_light(
   background_color = "#FFFFFF",
   header_font_google = google_font("Josefin Sans"),
   #text_font_google   = google_font("Montserrat", "300", "300i","400i","700"),
-  code_font_google   = NULL,
+  code_font_family = "'Source Code Pro'",
+  code_font_size = "0.8em",
   text_slide_number_color = "#FF0266",
   code_inline_color = "#0000FF",
   #inverse_background_color = "#272822",
@@ -64,32 +65,39 @@ mono_light(
 ```
 
 
-##	Topics covered 
 
- 1. ** <span style="color:purple">Day 1: Introduction to Longitudinal Analysis</span>**
-  *  <span style="color:red">xx</span> 
-  * <span style="color:red">xx</span>
-  * <span style="color:red">xx</span>
+####	Topics to be covered 
+
+** <span style="color:purple">Day 1: Continuous Longitudinal Data</span>**
+  *  <span style="color:red">Objectives</span> 
+  *  <span style="color:red">Introduction to longitudinal data analysis</span> 
+  *  <span style="color:red">Features of longitudinal data</span> 
+  * <span style="color:red">Motivating examples</span>
+  * <span style="color:red">Cross sectional vs longitudinal data</span>
+  * <span style="color:red">Simple methods</span>
+  * <span style="color:red">Exploratory data analysis</span>
   
- 2. ** <span style="color:purple">Day 2: Modelling of longitudinal data</span>**
+** <span style="color:purple">Day 2: Modelling of Longitudinal Data</span>**
   *	Linear Mixed Effects Models
   * Marginal Models
   * Estimation of Marginal model
-
- 3. ** <span style="color:purple">Day 3: Methods for Discrete Data</span> **
+  
+  
+---
+** <span style="color:purple">Day 3: Methods for Discrete Data</span> **
   * <span style="color:blue">Generalized Estimating Equations (GEE)</span>
   * <span style="color:blue">Generalized Linear Mixed Models (GLMM)</span>
  
- 4. ** <span style="color:purple">Day 4: Addressing Missing Data in Longitudinal Studies</span>**
+** <span style="color:purple">Day 4: Addressing Missing Data in Longitudinal Studies</span>**
   * Types of Missing Data Mechanisms (MCR, MR, NMR)
   * Handling Missing Data: Multiple Imputation
   * Handling Missing Data: Weighted GEE
 
 ---
 
-## Goal of the Workshop
+#### Goal of the training
 
-The goal of this course is to:
+The goal of this training is to:
 
 - Provide an overview of fundamental statistical models and methods for the analysis of **longitudinal data**, including key theoretical results presented.
 
@@ -101,13 +109,46 @@ The goal of this course is to:
 
 ---
 
-## Primary Objectives of the Workshop
+#### Primary Objectives ... (1)
 
+
+- Understand how longitudinal data differs from cross sectional data.
+
+- Explain the consequences of ignoring correlated observations.
+
+- Appreciate the merits of longitudinal data analysis.
+
+- Apply graphical techniques to explore repeated/dependent/clustered data.
+
+- Discuss different model families.
+
+- Analysis and interpret results from longitudinal studies.
+
+
+---
+
+#### Primary Objectives ... (2) 
+
+- Understand LDA Models for Gaussian and non Gaussian data.
+
+- Be familiar with theoretical background of statistical techniques used for analyzing longitudinal and handling of missing data.
+
+- Translate statistical theory into practical application.
+
+- Prepare scientific reports describing methods used for analysis, results obtained and their interpretation.
+
+- Communicate methods used and the clinical/scientific meaning of the results from a longitudinal data analysis and defending their analysis.
+
+
+
+---
+
+#### Primary Objectives ... recap 
 - Understand the effect of non-independence in longitudinal data.
 
 - Recognize limitations of classical analysis methods in longitudinal studies.
 
-- Explore and analyze the marginal distribution of longitudinal data.
+- Explore and analyse the marginal distribution of longitudinal data.
 
 - Learn and apply methods for analyzing continuous outcomes using linear mixed effects models.
 
@@ -115,60 +156,54 @@ The goal of this course is to:
 
 - Gain knowledge about missing data mechanisms and techniques for handling them.
 
+- Statistical computing packages: R, Stata and SAS
 
 ---
 
-class: inverse, middle
+### Day 1: Continuous Longitudinal Data
 
-# Day 1: Introduction to Longitudinal Analysis
+#### Introduction to longitudinal data analysis
   
-* Understanding <span style="color:red">Non-Independence</span> in Clustered Data
-* <span style="color:red">Limitations of Classical Analysis Methods</span>
-* Exploratory Analysis of Marginal Distribution (Average Evolution, Variance Structure, and Correlation Structure)
+##### Repeated measures ... (1)
 
----
-
-## Repeated Measures
-
-- Statistical techniques like ANOVA and regression have a basic assumption that the residual or error terms are iid.
+- Statistical techniques like ANOVA and regression have a basic assumption that the residual or error terms are independent and identically distribution (iid).
 
 - In applied sciences, often confronted with the collection of correlated data.
 
-- The term embraces a multitude of data structures such as Multivariate observations, Clustered data, repeated measurements, Longitudinal data & spatially correlated data.
+ - The term embraces a multitude of data structures such as multivariate observations, clustered data, repeated measurements,longitudinal data & spatially correlated data.
 
 - The distinguishing feature of repeated data is that they are correlated.
 
 ---
 
-## Familiar examples of clustered data
+##### Repeated measures ... (2)
 
-- Families, towns, litters, etc. are familiar examples of clustered data.
-
-- In each of these examples, a cluster is a collection of subunits on which observations are made.
+- Familiar examples of clustered data are families, schools, hospitals, towns, litters, ...
+ - In each of these examples, a cluster is a collection of subunits on which observations are made.
 
 - Another form of clustering arises when data are measured repeatedly on the same unit.
 
-- When these repeated measurements are taken over time, it is called a longitudinal study.
+ - When these repeated measurements are taken over time, it is called a longitudinal study (panel data).
 
-- When the correlation occurs over space, it is called a Spatial study.
+ - When the correlation occurs over space, it is called a Spatial study.
 
 ---
 
-## Longitudinal data
+#### Longitudinal data
 
 - Special forms of repeated measurements.
 
 - Longitudinal Studies: Studies in which individuals are measured repeatedly through time.
 
-- Longitudinal data (LD) sets differ from Time Series data sets.
+- Longitudinal data (LD) sets differ from time Series (TS) data sets.
 
-- LD: usually consists of a large number of a short series of time points.
+ - LD: usually consists of a large number of a short series of time points.
 
-- TS: usually consists of a single, long series of time points.
+ - TS: usually consists of a single, long series of time points.
 
 - Examples of LD:
 
-  - Monthly CD4 count of a patient over time.
+  - Monthly CD4 count (viral load) of a patient over time.
 
   - Psychological change of a patient.
 
@@ -176,13 +211,13 @@ class: inverse, middle
 
 ---
 
-## Features of Longitudinal Data
+#### Features of longitudinal data
 
 - Defining feature of longitudinal studies is that measurements of the same individuals are taken repeatedly through time.
 
 - Longitudinal studies allow direct study of change over time.
 
-- Objective: primary goal is to characterize the change in response over time and factors that influence change.
+- Objective: to characterize the change in response over time and factors that influence change.
 
 - With repeated measures on individuals, we can capture within-individual change.
 
@@ -195,13 +230,45 @@ class: inverse, middle
 
 - Subjects may be measured at different occasions.
 
----
-
 - In this module we will master a set of statistical tools that can handle all of these cases.
 
-- Emphasis on concepts, model building, software, and interpretation.
+- Emphasis on concepts, model building, software and interpretation.
 
-### <span style="color:purple"> Advantages of modern longitudinal methods </span>
+---
+
+#### Famous LD examples ... (1)
+
+The Baltimore Longitudinal Study of Aging (BLSA)
+
+- BLSA: Ongoing, multidisciplinary observational study, started in 1958
+
+- Objective : characterize the many aspects of the aging process and learn how people can adapt to aging
+
+- Volunteers return approximately every 2 years for 3 days of biomedical and psychological examinations
+
+- at first only males (over 1500 by now), later also females
+
+- an average of about 20 years of follow up
+
+ - NCT00233272
+
+---
+
+#### Famous LD examples ... (2)
+
+Indonesian children’s health study (ICHS)
+
+- Interest is to investigate the association between risk of respiratory illness and vitamin A deficiency
+
+- 250 children followed
+
+- Multivariate data have received most attention in the stat. literature.
+
+- Remarkable developments in statistical methodology for LDA have been done in the past 30 years.
+
+---
+
+#### <span style="color:purple"> Advantages of modern longitudinal methods ... (1)</span> 
 
 - You have much more flexibility in research design.
 
@@ -220,6 +287,8 @@ class: inverse, middle
 
 ---
 
+#### <span style="color:purple"> Advantages of modern longitudinal methods ... (2)</span> 
+
 - You can include interactions with time (to test whether a predictor’s effect varies over time).
    - Some effects dissipate—they wear off.
    - Some effects increase—they become more important.
@@ -231,7 +300,7 @@ class: inverse, middle
 
 ---
 
-### <span style="color:purple">Challenges of Longitudinal Data Analysis</span>
+#### <span style="color:purple">Challenges of Longitudinal Data Analysis</span>
 
 - Observations are not, by definition, independent → must account for dependency in data.
 
@@ -247,7 +316,7 @@ class: inverse, middle
 
 ---
 
-### Recap:
+#### Recap:
 
 - Longitudinal studies:
   - Measurements of the same individuals are taken repeatedly through time.
@@ -257,7 +326,7 @@ class: inverse, middle
 
 ---
 
-## Motivating Examples
+#### Motivating examples
 
 **<span style="color:blue">The Jimma Infant Survival Data</span>**
 
@@ -403,7 +472,7 @@ plot(age1, mean1, type= "l",ylim=c(20,30), xlab="age",
 - The mean profile for males is higher than that of females.
 ---
 
-## Cross-sectional versus Longitudinal Data
+#### Cross-sectional versus longitudinal data
 
 Cross-sectional data and longitudinal data are two primary types of data used in statistical analysis:
 
@@ -411,17 +480,17 @@ Cross-sectional data and longitudinal data are two primary types of data used in
 - Longitudinal data: Collected over an extended period, involving repeated observations of the same individuals over time.
 ---
 
-### t-test Example
+#### t-test example
 
-**Diastolic Blood Pressures from the Captopril Data**
+**Diastolic Blood Pressures (DBP) from the Captopril Data**
 
-- Consider the diastolic blood pressures.
+- Consider the DBP.
 
 - It includes 15 patients with hypertension.
 
 - The response of interest was the supine blood pressure before and after treatment with CAPTOPRIL.
 
-- Research question: <span style="color:red">How does treatment affect blood pressure?</span>
+- Research question: <span style="color:red">How does treatment affect BP?</span>
 
 ---
 
@@ -430,63 +499,80 @@ library(tidyverse)
 before <- c(130, 122, 124, 104, 112, 101, 121, 124, 115, 102, 98, 119, 106, 107, 100)
 after <- c(125, 121, 121, 106, 101, 85, 98, 105, 103, 98, 90, 98, 110, 103, 82)
 data <- data.frame(
-  Group = rep(c("Before", "After"), each = 15),
-  Diastolic_BP = c(before, after))
-paired <- data %>% group_by(Group) %>%
-  summarize(Mean = mean(Diastolic_BP),  N = n(),Std_Deviation = sd(Diastolic_BP), 
-            Std_Error_Mean = sd(Diastolic_BP)/sqrt(n()))
+  group = rep(c("Before", "After"), each = 15),
+  dbp = c(before, after))
+paired <- data %>% group_by(group) %>%
+  summarize(Mean = mean(dbp),  N = n(),Std_Deviation = sd(dbp), 
+            Std_Error_Mean = sd(dbp)/sqrt(n()))
 print(paired)
 ```
 
 - Paired data analysis: Examines related variables within the same subjects.
-- Diastolic blood pressure: Analyzed before and after treatment.
+- DBP: Analysed before and after treatment.
 - Average decrease: More than 9 mmHg after treatment.
-- Classical Analysis: Compares measurements within each subject.
+- Classical analysis: Compares measurements within each subject/participant.
+$d_i = Y_{i1}-Y_{i2}, i = 1, 2, ..., 15$
 - Focus: Changes from before to after treatment.
-- Testing for Treatment Effect: Assesses if the average difference equals zero.
+- Testing for treatment effect: Assesses if the average difference equals zero.
+- Paired observations: The simplest case of longitudinal data
+- Much variability between subjects
 ---
 
-## Cross-sectional vs Longitudinal Data
+
+#### Unpaired, two sample t-test
+
+- What if we had ignored the paired nature of the data?
+- We then could have used a two sample (unpaired) t test to compare the average BP of untreated patients (controls) with treated patients.
+- We would still have found a significant difference (p= 0.0377), but the p value would have been more than 30 30×larger compared to the one obtained using the paired t test (p=0.001).
+
+
+Conclusion:
+- The two sample t test does not take into account the fact that the 30 measurements are not independent observations.
+- Illustration: classical statistical models which assume independent observations will not be valid for the analysis of longitudinal data
+
+---
+
+#### Cross-sectional vs longitudinal data
 
 - Cross-sectional data refers to the data collected at a specific point in time.
 - Observations from cross-sectional data are uncorrelated.
-- Longitudinal data refers to measurements made repeatedly over time to study how the subjects evolve over time.
-- That means the concern of longitudinal data analysis is change over time.
-- In longitudinal study, the measurements made for subjects over a period of time are correlated.
+- Longitudinal data refers to measurements made repeatedly over time to study how the subjects/patients/participants evolve over time.
+ - That means the concern of longitudinal data analysis is change over time.
+- In longitudinal study, the measurements made for participants over a period of time are correlated.
 - Suppose it is of interest to study the relation between some response Y and age.
 - A cross-sectional study yields the following data:
 
 ```{r, out.width='40%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/Y_age.png")
 ```
-  (Graph suggesting a negative relation between Y and age)
+- Graph suggesting a negative relation between Y and age
 
 ---
 
-## Cross-sectional vs Longitudinal Data
+#### Cross-sectional vs longitudinal data
 
 - Exactly the same observations could also have been obtained in a longitudinal study, with 2 measurements per subject.
 - First case:
 ```{r, out.width='55%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/cross_sec.png")
 ```
-(Graph suggesting a negative cross-sectional relation but a positive longitudinal trend)
+- Graph suggesting a negative cross-sectional relation but a positive longitudinal trend
 
 ---
 
-## Cross-sectional vs Longitudinal Data
+#### Cross-sectional vs longitudinal data
 
 - Second case:
 ```{r, out.width='55%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/logitu.png")
 ```
-  (Graph suggesting the cross-sectional as well as longitudinal trend to be negative)
+- Graph suggesting the cross-sectional as well as longitudinal trend to be negative.
   
 - **Conclusion:** Longitudinal data allow distinguishing differences between subjects from changes within subjects.
 
 ---
 
-### Longitudinal data: broad form
+#### Longitudinal data: wide/broad form
 
 .pull-left[
 - Wide format of data
@@ -532,7 +618,7 @@ subject | time | y | x
 
 ---
 
-### Longitudinal data
+#### Longitudinal data
 
 - With LD: multiple measurements taken on each subject.
 - You not only can examine the differences between subjects, but you can also examine the change within subjects across time.
@@ -542,7 +628,7 @@ subject | time | y | x
 
 ---
 
-### Variance-Covariance Matrix for Longitudinal Data
+#### Variance-covariance matrix for longitudinal data
 
 ```{r, out.width='55%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/vcov.png")
@@ -557,9 +643,9 @@ knitr::include_graphics("Image/vcov.png")
 
 ---
 
-## Introduction to Longitudinal Analysis
+#### Introduction to longitudinal data analysis
 
-**<span style="color:purple">Longitudinal data:</span>** Data in the form of repeated measurements over time or other factors on each individual or unit in a sample from a population of interest.
+**<span style="color:purple">Longitudinal data:</span>** data in the form of repeated measurements over time or other factors on each individual or unit in a sample from a population of interest.
 
 Examples:
 - Weekly measurements of growth on experimental plots with different fertilizers.
@@ -577,11 +663,11 @@ The same response or outcome is measured repeatedly on each unit.
 
 ---
 
-## Required Statistical Model
+#### Required statistical model
 
 A statistical model that acknowledges this data structure in which the questions can be formalized and associated specialized methods of analysis based on the model.
 
-- Longitudinal data studies have become increasingly common and widespread across various scientific disciplines.
+- Longitudinal data/studies have become increasingly common and widespread across various scientific disciplines.
 - We will study both classical and more modern approaches to representing and interpreting these data.
 
 **Terminology**
@@ -589,23 +675,16 @@ A statistical model that acknowledges this data structure in which the questions
 - Longitudinal data refers to data in the form of repeated measurements that might be over time but could also be over some other set of conditions.
 - Time is most often the condition of measurement.
 - "Response" and "outcome" are used interchangeably to denote the repeated measurement or outcome of interest.
-- "Unit," "individual," and "subject" are used interchangeably to refer to the entity being measured.
+- "Participant", "Unit", "individual" and "subject" are used interchangeably to refer to the entity being measured.
 
 **Applications**
 
-Next, we consider several applications that exemplify longitudinal data situations and the range of ways data are collected and types of responses and questions of interest.
+We consider several applications that exemplify longitudinal data situations and the range of ways data are collected and types of responses and questions of interest.
 
 ---
-class: inverse, middle
+#### Simple methods
 
-# Day 2: Simple Methods
-
-
--	Introduction: longitudinal studies
-
-- Choosing outcome measures
-
--	Simple methods  
+-	Introduction 
  - Overview of frequently used methods
 -	Summary statistics
 - Practical using R
@@ -613,7 +692,7 @@ class: inverse, middle
 
 ---
 
-## Simple Methods
+#### Simple methods: introduction
 
 - The reason why classical statistical techniques fail in the
 context of longitudinal data is that observations within participants
@@ -648,9 +727,9 @@ implies that classical techniques can be applied again.
 
 ---
 
-## The Sesame Data
+#### Sesame data
 
-- Cross-year by locations trial of Sesame Genotypes
+- Cross-year by locations trial of sesame genotypes
 
 - Sesame is a short day plant & sensitive to photo-period, temperature, and moisture stress.
 
@@ -667,7 +746,7 @@ implies that classical techniques can be applied again.
 
 ---
 
-## The Sesame Data
+## The sesame Data
 
 ```{r, out.width='45%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/sesame_prof.png")
@@ -675,7 +754,8 @@ knitr::include_graphics("Image/sesame_prof.png")
 - Three years average yield over the three locations by thirteen genotypes
 - Sesame Data: Profile plot by Year and Location
 ---
-## Sesame Data: Profile plot by Year and Location
+
+#### Sesame Data: Profile plot by Year and Location
 
 .pull-left[
 ```{r, out.width='100%', fig.align='center', echo=FALSE}
@@ -687,7 +767,7 @@ knitr::include_graphics("Image/sesame_area.png")
 
 - Fixed # of measurements per genotypes
 
-- It seems that the yield on the first year is >> yield on the 2nd year for the majority of the observations.
+- It seems that the yield on the first year is >> yield on the $2^{nd}$ year for the majority of the observations.
 
 - Some lines on the plot show an increasing trend
 
@@ -697,11 +777,11 @@ knitr::include_graphics("Image/sesame_area.png")
 
 - Variability within genotypes
 
-- May be it is good to see the mean profile plot by location.
+- May be it is good to see the mean profile plot by location
 ]
 
 ---
-## Mean profile of Sesame yield by Location
+#### Mean profile of sesame yield by location
 
 ```{r, out.width='45%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/sesame_mean.png")
@@ -712,13 +792,20 @@ knitr::include_graphics("Image/sesame_mean.png")
 
 ---
 
-## Overview of Frequently Used Methods
+#### Overview of frequently used methods
 
-### Analysis at Each Time Point Separately
+#### 1. Analysis at each time point separately
 
-- The data are analyzed at each occasion separately.
+- The data are analysed at each occasion separately.
 
-- Example: Use the Sesame Data set to analyze the number of days to maturity using one-sample t-test for each location at each time point.
+- Example: Use the sesame data set to analyze the number of days to maturity using one-sample t-test for each location at each time point.
+
+
+```{r, out.width='45%', fig.align='center', echo=FALSE}
+knitr::include_graphics("Image/fig14.png")
+```
+
+---
 
 **Summary of Days to Maturity**
 
@@ -728,13 +815,31 @@ knitr::include_graphics("Image/sesame_mean.png")
 
 - Performed two-sample t-test, despite having three locations.
 
+
+```{r, out.width='45%', fig.align='center', echo=FALSE}
+knitr::include_graphics("Image/fig15.png")
+```
+- Problem of multiple testing since multiple t-tests are used!
+
 ---
 
-## Problem of Multiple Testing
+#### Why is multiple testing problem?
 
 - Multiple testing: Conducting multiple t-tests leads to inflation of Type I error.
 
 - Experiment-wise Type I error rate: Probability of falsely rejecting at least one null hypothesis among multiple tests.
+
+- $\alpha = 5\% \Longrightarrow$ one trial in 20 will falsely claim that a difference exist when there is none
+
+- Let’s consider a case where you have 20 hypotheses to test at a significance level of 0.05.
+
+- Prob . at least one sig. result (experiment wise Type I error rate) $= 1−(1−\alpha)^{20} = 0.64$ 
+- $\Longrightarrow$ with 20 tests being considered, we have a 64% chance of observing at least one significant result, even if all of the tests are actually not significant
+
+---
+
+#### Experiment wise Type I Error
+
 
 | # of Comparisons (K) | Experiment-wise Type I Error |
 |---------------------|-----------------------------|
@@ -745,11 +850,12 @@ knitr::include_graphics("Image/sesame_mean.png")
 
 - With 5 tests at 5% significance level, there's a 22.6% chance of observing at least one significant result even if all tests are not significant.
 
+- If 3 comparisons are performed at 5%, the overall significance will be increased more that 14%
+- Increasing the number of comparisons also increases the overall significance.
+
 ---
 
-## Experiment-wise Type I Error
-
-- Increasing the number of comparisons also increases the overall significance.
+#### Experiment-wise Type I Error
 
 **Advantages of Analysis at Each Time Point**
 
@@ -766,7 +872,7 @@ knitr::include_graphics("Image/sesame_mean.png")
 
 ---
 
-## Analysis of Area Under the Curve (AUC)
+#### Analysis of Area Under the Curve (AUC)
 
 - For each participant, the area under its curve is calculated:
 $$AUC_i=(t_{i2}-t_{i1})*(y_{i2}-y_{i1})/2+(t_{i3}-t_{i2})*(y_{i3}-y_{i2})/2+ ...$$
@@ -775,13 +881,13 @@ $$AUC_i=(t_{i2}-t_{i1})*(y_{i2}-y_{i1})/2+(t_{i3}-t_{i2})*(y_{i3}-y_{i2})/2+ ...
 
 - Ex: we use the days to CFU data to calculate the area under the curve.
 
-### Advantages
+##### Advantages
 
 - no problems of multiple testing
 - does not explicitly assume balanced data
 - compares ‘overall’ differences
 
-### Disadvantage
+##### Disadvantage
 
 - uses only partial information: $AUC_i$
 - participants could have the same AUC but completely different profiles
@@ -790,7 +896,7 @@ $$AUC_i=(t_{i2}-t_{i1})*(y_{i2}-y_{i1})/2+(t_{i3}-t_{i2})*(y_{i3}-y_{i2})/2+ ...
 
 ---
 
-## Analysis of endpoints 
+#### Analysis of endpoints 
 
 - General Idea : Assess differences only on the last time point
 
@@ -798,11 +904,11 @@ $$AUC_i=(t_{i2}-t_{i1})*(y_{i2}-y_{i1})/2+(t_{i3}-t_{i2})*(y_{i3}-y_{i2})/2+ ...
 
 - Hence, ‘treatment’ effects can be assessed by only comparing the measurements at the last occasion
 
-### Advantages
+##### Advantages
 - no problems of multiple testing
 - does not explicitly assume balanced data
 
-### Disadvantages
+##### Disadvantages
 - uses only partial information
 - only valid for large data sets
 - the last time point must be the same for all participants
@@ -811,18 +917,18 @@ $$AUC_i=(t_{i2}-t_{i1})*(y_{i2}-y_{i1})/2+(t_{i3}-t_{i2})*(y_{i3}-y_{i2})/2+ ...
 
 ---
 
-## Analysis of increments
+#### Analysis of increments
 
 - A simple method to compare evolutions between participants,
 correcting for differences at baseline, is to analyze the
 participant-specific changes: $y_{in_i}-y_{i1}$
 
 
-### Advantages
+##### Advantages
 - no problems of multiple testing
 - does not explicitly assume balanced data
 
-### Disadvantage
+##### Disadvantage
 - uses only partial information
 - the last time point must be the same for all participants
 - possible problems with missing data
@@ -833,18 +939,18 @@ participant-specific changes: $y_{in_i}-y_{i1}$
 
 - Another way to analyse endpoints, correcting for differences at baseline, is to use analysis of covariance techniques, where the first measurement is included as covariate in the model.
 
-### Advantages:
+##### Advantages:
 
 - no problems of multiple testing
 - does not explicitly assume balanced data
 
-### Disadvantages:
+##### Disadvantages:
 - uses only partial information: $y_{i1}$ and $y_{in_i}$
 - does not take into account the variability of $y_{i1}$ 
 
 ---
 
-## Summary Statistics
+#### Summary Statistics
 
 - The AUC, endpoints and increments are examples of summary statistics. 
    
@@ -876,13 +982,10 @@ these disadvantages
 
 
 ---
-class: inverse, middle
 
-## Exploratory Data Analysis
+#### Exploratory data analysis
 
----
-
-### Introduction
+##### Introduction
 
 Exploratory analysis comprises techniques to visualize patterns in the data.
 
@@ -900,7 +1003,7 @@ However, this may or may not imply a valid marginal model.
 
 ---
 
-### Exploratory Data Analysis
+#### Exploratory data analysis
 
 Longitudinal data analysis, like other statistical methods, has two components which operate side by side:
 - exploratory and
@@ -917,7 +1020,7 @@ In this regard graphical displays are so important. At this stage, the following
 
 ---
 
-### Jimma Infant Data
+#### Jimma infant data ... (1)
 
 Follow-up study of newborn infants in Southwest Ethiopia.
 
@@ -933,7 +1036,7 @@ Weight was one of the variables recorded at each visit.
 Research question: <span style="color:red;">How does weight change over time?</span>
 ---
 
-### Jimma Infant Data
+#### Jimma infant data ... (2)
 
 The individual profiles support a <span style="color:purple;">random-intercepts model</span>
 
@@ -948,7 +1051,7 @@ xyplot(weight ~ factor(age), group = ind, lty=1 ,
 
 ---
 
-### Conclusions From the profile
+#### Conclusions from the profile
 
 - Much <span style="color:blue;">variability between children</span>
 
@@ -959,7 +1062,7 @@ xyplot(weight ~ factor(age), group = ind, lty=1 ,
 
 ---
 
-### Mean Profile
+#### Mean profile
 
 The mean profile can be plotted using the following R code:
 
@@ -972,7 +1075,7 @@ plot(age1, mean1, type= "l", xlab="age",
 
 ---
 
-### Mean Profile by Sex
+#### Mean profile by sex
 
 - The mean profiles by sex:
 ```{r, message=FALSE, warning=FALSE, fig.width=7, fig.height=4, fig.align='center'}
@@ -981,7 +1084,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun = mean,
 ```
 ---
 
-## Exploring the <span style="color:blue">Random Effects</span>
+#### Exploring the <span style="color:blue">random effects</span>
 
 - The mean structure for linear mixed effect model can be determined based on the <span style="color:red">random effects</span>.
 
@@ -992,7 +1095,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun = mean,
 - Continuing with the analysis of the <span style="color:blue">Jimma infants</span> data, we see from the individual profiles of these data that a simple linear regression model of <span style="color:red">weight</span> as a function of <span style="color:red">age</span> may be suitable.
 
 ---
-### Jimma Infant Survival
+#### Jimma infant survival
 
 -The data was fitted this for each subject as follows:
 ```{r, message=FALSE, warning=FALSE}
@@ -1115,7 +1218,11 @@ pairs(response1, panel=panel.smooth, cex = 1.5, pch = 16,  bg="light green",
       diag.panel=panel.hist, cex.labels = 2, font.labels=2)
 ```
 
+---
 
+```{r, message=FALSE, warning=FALSE, fig.align='center', fig.height=5}
+pmplots::pairs_plot(response1, y = c("d1", "d2", "d3", "d4"), col = "cyan")
+```
 
 ---
 
@@ -1295,7 +1402,7 @@ $$= X_{i}\beta + Z_{i}b_{i} + \varepsilon_{i}$$
 
 The model is given by:
 
-$$Y_i = X_i \beta + Z_i b_i + \varepsilon_i$$
+$$Y_i = \underset{\text{fixed effect}}{\underbrace{X_i \beta}} + \underset{\text{random effect}}{\underbrace{Z_i b_i}} + \varepsilon_i$$
 
 Where:
 
@@ -2773,24 +2880,13 @@ To overcome this problem, two general types of solutions have been proposed:
 ### GLMMs in R: lme4
 
 - Fits a mixed effects logistic regression for Toenail data with random intercepts and 15 quadrature points for the adaptive Gauss-Hermite rule:
+---
 
 ```{r, message=FALSE, warning=FALSE}
 library(lme4)
 glmmFit <- glmer(y ~ treatn*time + (1 | idnum), family = binomial(), 
                  data = toenail, nAGQ = 15)
 summary(glmmFit)
-```
----
-```{r, message=FALSE, warning=FALSE}
-# Extracting fixed effects coefficients and their significance
-coef_summary <- summary(glmmFit)$coefficients
-
-# Extracting variance components for random effects
-variance_components <- VarCorr(glmmFit)
-
-# Print results
-print(coef_summary)
-print(variance_components)
 ```
 
 ---
@@ -3023,13 +3119,17 @@ class: inverse,  middle
 
 ---
 
-## Introduction
+### Introduction
+
+- **<span style="color:red">Missing data:</span>** Absence of recorded information for certain observations or variables in a dataset.
 
 - Missing data is very common in statistical analysis. 
 
-- However, having too much missing data can invalidate a study as it reduces power and precision. 
+- **<span style="color:red">Challenges:</span>** Biased results, reduced statistical power, loss of information in analysis.
 
-- Dealing with missing data requires considering the missing data patterns, mechanisms, and the chosen analytic approach.
+- **<span style="color:red">Impact:</span>** Requires careful handling to avoid misleading conclusions.
+
+- **<span style="color:red">Importance:</span>** Addressing missing data ensures accurate and reliable data analysis and interpretation.
 
 ---
 
@@ -3105,16 +3205,6 @@ Depends on who you ask...
 
 ---
 
-### Common Techniques for Dealing with Missing Data
-
-1. Complete Case Analysis (Listwise deletion)
-2. Available Case Analysis (Pairwise deletion)
-3. Unconditional Mean Imputation (Mean substitution)
-4. Single Imputation (Deterministic Imputation)
-5. Stochastic Imputation
-
----
-
 ### What to Consider
 
 - **<span style="color:red">Dealing with missing data requires considering</span>** **<span style="color:purple">the missing data patterns</span>**, **<span style="color:purple">mechanisms</span>**, **<span style="color:purple">proportion</span>**, and the chosen analytic approach.
@@ -3132,13 +3222,15 @@ Depends on who you ask...
 ### Missing Data in Longitudinal Studies
 
 
-**Monotone Missing Data Pattern**
+**<span style="color:purple">Monotone Missing Data Pattern</span>**
 
-- In longitudinal studies, missing data patterns can have various structures. 
+- Missing data follows a consistent direction (either always increasing or always decreasing) across observations.
 
-- One common pattern is the monotone missing data pattern, where not all individuals are observed at all time points, leading to dropouts in the data. 
+- Common in longitudinal studies where participants drop out progressively over time.
 
-The table representing the monotone missing data pattern for a longitudinal studies:
+- May arise due to systematic reasons such as treatment effects or participant attrition.
+
+- Example: Participants dropping out of a study as time progresses. 
 
 | Study | Time1 | Time2 | Time3 |
 |-------|-------|-------|-------|
@@ -3148,12 +3240,16 @@ The table representing the monotone missing data pattern for a longitudinal stud
 
 ---
 
-**Intermittent/Arbitrary Missing Data Pattern**
+**<span style="color:purple">Intermittent/Arbitrary Missing Data Pattern</span>**
 
-- In longitudinal studies, another common missing data pattern is the intermittent or arbitrary pattern, where data is missing at different time points for various individuals. 
+- Missing data occurs randomly or sporadically across observations without a consistent direction.
 
+- Common in cross-sectional and longitudinal studies where participants may miss data points randomly.
 
-The table representing the arbitrary missing data pattern for longitudinal studies:
+- Can arise due to factors like random non-response or data collection errors.
+
+- Example: Participants missing certain measurements for various reasons at different time points.
+
 
 | Study | Time1 | Time2 | Time3 |
 |-------|-------|-------|-------|
@@ -3163,23 +3259,38 @@ The table representing the arbitrary missing data pattern for longitudinal studi
 | 4     | .     | .     | X     |
 | 5     | .     | X     | .     |
 
+---
+### Comparison:
 
-- Proper data handling, including data imputation, is crucial to ensure reliable subsequent data analysis.
+**Data Collection Context:**
+- Monotone: Often observed in longitudinal studies.
+- Intermittent: Can occur in various study designs.
+
+**Handling:**
+- Monotone: Some methods like FOCF might be suitable.
+- Intermittent: Requires more flexible imputation methods or techniques that account for random missingness.
+
+**Bias:**
+- Monotone: Biases can occur if the assumption of similarity between consecutive observations is violated.
+- Intermittent: Imputed values might not be as biased as long as missingness is random.
 
 ---
 
 ### Types of Missing Data
 
 - Looking carefully the causes of missingness enable us to employee the **appropriate missing data management system**.
+
   - Estimation of the parameter with missing data depends on the missing data mechanism. 
 
 - The missing data mechanism is a probability model for missingness. 
 - Data is often described in accordance to **the reasons for the missing data**. 
 
 - According to the mechanisms of missingness, we assume **three types** of missing data.
-  - Missing Completely at Random (MCAR)
-  - Missing at Random (MAR)
-  - Not Missing at Random (NMAR)
+  - **<span style="color:orange">Missing Completely at Random (MCAR)</span>**
+  
+  - **<span style="color:orange">Missing at Random (MAR)</span>**
+  
+  - **<span style="color:orange">Not Missing at Random (NMAR)</span>**
 
 ---
 
@@ -3189,7 +3300,7 @@ The table representing the arbitrary missing data pattern for longitudinal studi
 
 - The notation of the MCAR mechanism is expressed as follows:
 
-$$p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)$$
+$$\color{red}{p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)}$$
 
 - Where:
 
@@ -3203,21 +3314,19 @@ $$p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)$$
 
 **<span style="color:red">Examples of MCAR data include:</span>**
 
-- Data that are missing by design.
-
 - Data with missing values due to equipment failure.
 
 - Samples lost in transit.
 
 - Data that is technically unsatisfactory.
 
-**<span style="color:purple"> Advantages of MCAR:</span>**
+**<span style="color:purple"> Characteristics of MCAR:</span>**
 
 - The missing data does not introduce any bias in statistical analyses.
 
 - Estimated parameters are not biased as a result of the missing data.
 
-**<span style="color:red"> disadvantage of MCAR:</span>**
+**<span style="color:red"> Challenges of MCAR:</span>**
   - Statistical power may be decreased due to the loss of information from the missing data.
 
 ---
@@ -3226,58 +3335,39 @@ $$p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)$$
 
 - Missingness depends only on observed components $Y^{obs}$, not on missing components $Y^{mis}$.
   - Expressed through the formula:
-    $$p(R|Y^{obs}, Y^{mis}) = p(R|Y^{obs}).$$
+  
+$$\color{red}{p(R|Y^{obs}, Y^{mis}) = p(R|Y^{obs})}$$
+  
   - The missingness pattern is completely determined by the observed data.
+  
   - The missingness mechanism does not depend on the actual missing values.
 
-**Ignore Missing Data Mechanism**
+ - The missing data mechanism can be ignored in likelihood inference 
+      - **Ignorable Missing Data Mechanism**
 
-- In likelihood inference under MAR, the missing data mechanism can be ignored.
-- Conduct likelihood-based inference without explicitly accounting for missing data.
-- Missingness pattern does not bias estimation of model parameters.
+ - Estimates of parameters remain unbiased even with missing data.
+ 
+---
+
+- Examples
+ 
+ - study protocol requires patients whose response value exceeds a threshold to be removed from the study
+ - physicians give rescue medication to patients who do not respond to treatment
+ 
+Features of <span style="color: red;">MAR</span> include:
+
+- The observed data cannot be considered a random sample from the target population.
+- Not all statistical procedures provide valid results under <span style="color: red;">MAR</span>.
+
+| **<span style="color: red;">Not Valid under MAR</span>** | **<span style="color: green;">Valid under MAR</span>** |
+|-------------------------------------------------------|-----------------------------------------------------|
+| Sample Marginal Evolutions                             | Sample Subject-Specific Evolutions                   |
+| Methods Based on Moments                               | Likelihood-Based Inference                           |
+| Mixed Models with Misspecified Correlation Structure  | Mixed Models with Correctly Specified Correlation Structure |
+| Marginal Residuals                                     | Subject-Specific Residuals                           |
 
 ---
 
-#### Unbiased Inference in MAR
-
-- MAR does not produce statistical bias.
-- Missingness depends only on observed data.
-- The missing data mechanism can be ignored in likelihood inference.
-- Consequently, estimates of parameters remain unbiased even with missing data.
-
-#### Validation of MAR Assumption
-
-- It is crucial to validate the MAR assumption.
-- Ensure that the observed data sufficiently inform the missing data mechanism.
-- If systematic differences between observed and missing data exist, the MAR assumption may not hold.
-
----
-
-- **Example**: In an educational assessment scenario:
-  - Data collected: Children's health and test scores.
-  - Missingness due to illness: Predictable from health data.
-  - Unrelated to test score: Missingness depends only on observed data.
-  - Illustrates the Missing at Random (MAR) mechanism.
-
-- **Unbiased Inference**:
-  - Under MAR: Unbiased inference is possible.
-  - Sufficient observed data: Missingness accounted for.
-  - Informative data: Assumption relies on data being informative.
-  - Systematic differences: Unaccounted differences may invalidate MAR.
-
-- **Sensitivity Analyses**:
-  - Assessing robustness under missing data assumptions.
-  - Including MAR assumption.
-  - Understanding impact if MAR is violated.
-
-- **Summary**: MAR's value in statistical inferences:
-  - Validity despite missing data.
-  - Missingness depends solely on observed data.
-  - Missing data mechanism ignored in likelihood inference.
-  - Essential to validate MAR assumption and explore sensitivity.
-
-
----
 
 ### 3. Not Missing at Random (NMAR)
 
@@ -3288,191 +3378,160 @@ $$p(R|Y) = p(R|Y^{obs}, Y^{mis}) = p(R)$$
 
 - The NMAR missing data mechanism can be represented by the following equation:
 $$p(R | Y^{obs}, Y^{mis}) = p(R | Y^{obs}, Y^{mis})$$
-- Unlike MCAR and MAR, where missingness can be explained by observed data alone, NMAR introduces an additional dependency on the unobserved missing values.
-
----
-
-### Non-Ignorable Missingness
 
 - Due to the presence of this dependency, NMAR is considered a <span style="color:red">non-ignorable missing data mechanism</span>.
 
-   - **ignorable** missingness refers to the likelihood-based inference can proceed without considering the missing data model.
-
-- However, in NMAR, the missing data mechanism is **non-ignorable**, and it must be explicitly incorporated into likelihood inference.
-
-#### Example: Student Tutorial Attendance
-
-- A concrete example of NMAR is when a student <span style="color:red">skips a tutorial lesson</span> because the student knows that the attendance would not be graded.
-
-- In this situation, the probability of missingness (skipping the tutorial) depends on both the <span style="color:red">observed data</span> (whether the tutorial is graded or not) and the <span style="color:red">unobserved data</span> (whether the student actually attended the tutorial).
-
-- The missingness is not random and is influenced by the student's decision-making process.
----
-
-### Diagnosing and Handling NMAR
-
-- Diagnosing <span style="color:red">NMAR</span> can be challenging since the reasons for missingness are <span style="color:red">unknown</span> and cannot be directly observed.
-
-- Handling <span style="color:red">NMAR</span> requires <span style="color:red">careful consideration</span> and specialized methods to address missingness properly.
-
-- Researchers often use <span style="color:red">sensitivity analyses</span> and model-based imputation techniques to account for the non-ignorable missing data mechanism in <span style="color:red">NMAR</span> scenarios.
-
-- The goal is to explore how different assumptions about the missing data mechanism may impact the study's results and <span style="color:red">conclusions</span>.
+- Real-world examples are often subtle and <span style="color: blue;">challenging to identify</span>.
 
 ---
 
-### Common Methods for dealing with missing data
+Examples
 
-**Ad-hoc Methods**
+- in studies on drug addicts, people who return to drugs are less likely than others
+to report their status
+- in longitudinal studies for quality-of-life, patients may fail to complete the
+questionnaire at occasions when their quality-of-life is compromised
 
-- A number of theories were introduced to account missing data.
+Features of <span style="color: red;">MNAR</span> include:
 
-1. **Listwise Deletion**
+- The observed data cannot be considered a random sample from the target population.
+
+- Only procedures that explicitly model the joint distribution ${y_i^o, y_i^m, R}$ provide valid inferences.
+
+- **<span style="color: red;">Analyses that are valid under MAR will not be valid under MNAR.</span>**
+
+- We cannot distinguish from the data at hand whether the missing data mechanism is MAR or MNAR
+   - We can distinguish between MCAR and MAR
+
+- often use **<span style="color:red">sensitivity analyses</span>** and model-based imputation techniques.
+
+---
+
+**Common Methods of Missing Data Treatments for Longitudinal Data**
+
+- **<span style="color: red;">Simple Methods</span>**
+     - **Complete Case Analysis**: Analyzing only cases with <span style="color: red;">complete data at all time points</span>.
+     - **Last Observation Carried Forward (LOCF)**: Imputing missing values with <span style="color: red;">last observed value</span>.
+
+- **<span style="color: red;">Modern Methods</span>**
+    - **Multiple Imputation**: Generating <span style="color: green;">multiple plausible imputed datasets</span>.
+      - Captures uncertainty, provides <span style="color: green;">accurate parameter estimates</span>.
+     
+     - **Likelihood-based Methods**: Uses <span style="color: blue;">full likelihood with missing data mechanism specified</span>.
+      - Requires <span style="color: blue;">correct model specification</span>, might be <span style="color: blue;">complex for large datasets</span>.
+    
+    - **Weighted GEE (Generalized Estimating Equations)**: <span style="color: purple;">Accounts for correlation in repeated measurements</span>.
+      - Weighted analysis, effective for <span style="color: purple;">longitudinal studies</span>.
+      
+---
+
+**<span style="color: red;">Simple Methods</span>**
+
+**Complete Case Analysis**
+
+   - <span style="color: red;">Discards valuable information</span>, can lead to <span style="color: red;">biased results if missingness is related to unobserved variables</span>.
 
 - The most commonly used approach that data scientists use to deal with missing data is to simply omit cases with missing data, only analysing the rest of the dataset. 
 - This method is known as listwise deletion or complete-case analysis.
 
 - The **<span style="color:magenta"> na.omit()</span>** function in R removes all cases with one or more missing data values in a dataset.
 
-- Let’s create a new small dataframe as an example to demonstrate Listwise Deletion
-
 ---
 
-### Ad-hoc Methods
+**Complete Case Analysis**
 
-Example for *Complete Case Analysis (Listwise Deletion)* example using the `sleepstudy` dataset from the `lme4` package in R:
+Example for *Complete Case Analysis (Listwise Deletion)* example using the `HIVdata` dataset.
 
-1. Install and load the required packages and dataset:
+First lets explore the missing value and pattern using 
+
 
 ```{r, message=FALSE, warning=FALSE}
-#install.packages("lme4")
-library(lme4)
-data(sleepstudy)
-set.seed(42)
-# Create a new dataframe with missing data
-missData <- sleepstudy
-missData$Reaction[sample(1:nrow(missData), 50)] <- NA
-missData1 <- missData
+library(readr); library(naniar)
+HIVdata <- read_csv("Data/HIVdata.csv")
+#miss_var_summary(HIVdata)
+miss_var_table(HIVdata)
 ```
 
-- Then perform Complete Case Analysis:
-
-```{r}
-complete_data <- na.omit(missData1)
+---
+- We can also look the missing pattern at each time point 
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+HIVdata %>% select(cd4, time) %>% group_by(time) %>% miss_var_summary()
 ```
+
+---
 
 - Now fit a linear mixed-effects model to the complete data:
 
----
-
+.pull-left[
+- **<span style="color: red;">Before remove na's</span>**
 ```{r}
-model_complete <- lmer(Reaction ~ Days + (Days | Subject), data = complete_data)
-print(model_complete)
+fit1 <- lmer(cd4 ~ time + (1 | id), 
+             data = HIVdata)
+summary(fit1)
 ```
+]
 
-- Remember that CCA (Listwise Deletion) involves removing cases with any missing data, and it may lead to biased results if the missingness is related to the outcome or predictors. 
-
-- Consider using more advanced methods like multiple imputation or mixed-effects models to handle missing data more effectively.
-
-```{r, eval=FALSE}
-model_miss <- lmer(Reaction ~ Days + (Days | Subject), data = missData1)
-print(model_miss)
+.pull-right[
+- **<span style="color: red;">After removal na's</span>**
+```{r}
+cc_data <- na.omit(HIVdata)
+cc_model<- lmer(cd4 ~time +(1|id), 
+              data = cc_data)
+summary(cc_model)
 ```
-
+]
 
 ---
 
-### Last Observation Carried Forward (LOCF)
+- **Last Observation Carried Forward (LOCF) Method**
 
-- LOCF is an imputation method for longitudinal data, which involves taking the previous observed value to replace missing values in the dataset.
-- This method is especially useful for data to be plotted for time series analysis.
-- The LOCF can be seen as a good method of choice because it produces a complete dataset and it can be used for cases where we know what the missing values should be.
+  - **Replace Missing Values**: In LOCF, missing values are <span style="color: blue;">imputed by carrying forward the last observed value</span>. 
+        - Assumes unrealistic constant profile after dropout, introduces <span style="color: red;">bias</span>.
+  - **Bias Concerns**: LOCF **<span style="color: red;">introduces bias</span>** by assuming the last observed value accurately represents the participant's status. However, this disregards potential changes or fluctuations after the last observation, impacting analysis validity and conclusions.
+
 - To perform the LOCF imputation method, we simply run the 
   - **<span style="color:orange">fill()</span>** function from the tidyr package on the dataset and the variable with the missing data.
-  - **<span style="color:cyan">lna.locf()</span>** function in zoo
+  - **<span style="color:magenta">lna.locf()</span>** function in zoo
 
+---
 
-```{r, message=FALSE, warning=FALSE}
-# Load required packages
-library(dplyr); library(tidyr)  # Required for fill() function
-set.seed(400)
-missData <- sleepstudy
-missData$Reaction[sample(1:nrow(missData), 30)] <- NA
-
-# LOCF Imputation using dplyr and tidyr
-missData <- missData %>%
-  group_by(Subject) %>%
-  fill(Reaction, .direction = "down")
+```{r, warning=FALSE, message=FALSE}
+library(zoo)
+LOCF_data2 <- na.locf(HIVdata)
+model_locf2 <- lmer(cd4 ~ time + (1 | id), data = LOCF_data2)
+summary(model_locf2)
 ```
 
 ---
+
+### Mean Imputation in Longitudinal Data
+
+- **Mean Imputation**: A <span style="color: blue;">simple method</span> to handle missing values in longitudinal data.
+
+- **Approach**: Replace missing values with the <span style="color: green;">mean of the observed values</span> for the same variable across time points.
+
+- **<span style="color: green;">Simple and straightforward method</span>** to handle missing values.
+- Easy to implement and **<span style="color: green;">interpret</span>**.
+- **<span style="color: green;">Maintains the structure</span>** of the dataset.
+
+- May **<span style="color: red;">introduce bias</span>** if the missing data mechanism is not missing completely at random (MCAR).
+- Does not account for individual variation or trends over time.
+- Reduces **<span style="color: red;">variability in the imputed variable</span>**, potentially underestimating uncertainty.
+
+---
+
+### Example
 
 ```{r}
-# Fit a linear mixed-effects model to the imputed data
-model_locf <- lmer(Reaction ~ Days + (Days | Subject), data = missData)
-print(model_locf)
+library(dplyr)
+# Replace missing values with cd4 means
+imputed_data <- HIVdata %>%  group_by(id) %>%
+  mutate(cd4 = ifelse(is.na(cd4), mean(cd4, na.rm = TRUE), cd4))
+model_mean_imputed <- lmer(cd4 ~ time + (1 | id), data = imputed_data)
+summary(model_mean_imputed)
 ```
 
----
-
-**3. Mean Imputation**
-
-- Some data scientists or statisticians may look for a quick fix by replacing missing data with the mean.
-- Mode is often used to impute categorical data.
-- We use `mice package` with argument **<span style="color:green">method = mean</span>**, & **<span style="color:red">m = 1</span>.** 
-
-```{r, warning=F, message=FALSE}
-# Introduce missing data for demonstration purposes
-set.seed(42)
-sleepstudy$Reaction[sample(1:nrow(sleepstudy), 30)] <- NA
-
-# Perform mean imputation
-mean_value <- mean(sleepstudy$Reaction, na.rm = TRUE)
-sleepstudy$Reaction_imputed <- ifelse(is.na(sleepstudy$Reaction), mean_value,
-                                      sleepstudy$Reaction)
-
-```
----
-
-```{r, warning=F, message=FALSE}
-# Fit a linear mixed-effects model to the imputed data
-model_mean <- lmer(Reaction_imputed ~ Days + (Days | Subject), data = sleepstudy)
-print(model_mean)
-```
-
----
-
-
-- To perform mean imputation for missing data in R, the `mice` package is used with `method = "mean"` argument..
-
-- The `method` argument in `mice()` allows you to specify the imputation method to be used. - Setting `method = "mean"` indicates that you want to perform mean imputation for the missing values.
-
-```{r, warning=FALSE, message=FALSE}
-library(mice)
-library(lme4)
-data(sleepstudy)
-set.seed(42)
-sleepstudy$Reaction[sample(1:nrow(sleepstudy), 30)] <- NA
-# Perform mean imputation using mice()
-imputed_data <- mice(sleepstudy, method = "mean", m=1, print = FALSE)
-model_mean_imputed <- with(imputed_data, lmer(Reaction ~ Days + (Days | Subject)))
-```
-
-- Then we can use `summary(pool())` to obtain the pooled results across the multiple imputed datasets.
-
----
-```{r, warning=FALSE, message=FALSE}
-# Print the summary of the model
-print(pool(model_mean_imputed))
-```
----
-
-```{r, warning=FALSE, message=FALSE}
-# Pool the results from multiple imputed datasets
-pooled_model <- pool(model_mean_imputed)
-# Print the pooled summary of the model
-print(pooled_model)
-```
 
 ---
 
@@ -3497,7 +3556,7 @@ print(pooled_model)
 - Steps in applying multiple imputation to missing data via the `mice` approach
 
 ```{r savedplot, out.width='60%', fig.align='center', echo=FALSE}
-knitr::include_graphics("Image/figMI.png")
+knitr::include_graphics("Image/MI.png")
 ```
 
 - The estimate of the parameter $\beta$ is simply the average of each parameter estimate $\beta^m$ obtained over the m imputed datasets (m = 1, ..., M):$$\hat{\beta}^* = \frac{1}{M}\sum_{m=1}^M \hat{\beta}^m$$
@@ -3518,134 +3577,39 @@ $$T_{\beta}=W_{\beta}+ \left[\frac{(M+1)}{M}\right] B_{\beta}$$
 - Let's look at it using the mice() function 
 
 ```{r, warning=FALSE, message=FALSE}
-data(sleepstudy); set.seed(42)
-sleepstudy$Reaction[sample(1:nrow(sleepstudy), 30)] <- NA
-# Perform Multiple Imputation
-imputed_data <- mice(sleepstudy, m = 5, method = "pmm", seed = 123, print = FALSE)
-# Analyze each imputed dataset separately (e.g., linear mixed-effects model)
-for (i in 1:5) {
-  model <- lmer(Reaction ~ Days + (Days | Subject), data = complete(imputed_data, i))
-  print(print(model))}
+library(mice)
+data.mice <- mice(HIVdata, m=5, method = "pmm", printFlag=FALSE, print = FALSE)
 ```
+
+- m=5 is to generate 5 imputed data,
+
+- different prediction model was used for different type of variable
+    
+   - pmm: predicted mean matching
+   - logreg: logistic regression
+   - polr: ordinal logistic regression
+
+- usually, one needs only 5 replicates for model building/testing, 20 to 100 for final model
 
 ---
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
-# Pool the results from multiple imputed datasets
-pooled_model <- pool(with(imputed_data, lmer(Reaction ~ Days + (Days | Subject))))
-
-# Print the pooled summary of the model
-print(pooled_model)
-
-```
----
-
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
-# Extract imputed data in long format using tidyr
-impdata <- complete(imputed_data, action = "long", include = FALSE)
-# Pool the results from multiple imputed datasets
-pooled_model <- pool(with(impdata, lmer(Reaction ~ Days + (Days | Subject))))
-
-# Print the pooled summary of the model
-print(pooled_model)
-
-```
-
----
-
-```{r, eval=FALSE}
-# Load the sleepstudy dataset
-data(sleepstudy)
-
-# Introduce missing data for demonstration purposes
-set.seed(42)
-sleepstudy$Reaction[sample(1:nrow(sleepstudy), 30)] <- NA
-
-# Perform Multiple Imputation
-imputed_data <- mice(sleepstudy, m = 5, method = "pmm", seed = 123)
-
-# Pool the results from multiple imputed datasets
-pooled_model <- pool(imputed_data)
-
-# Print the pooled summary of the model
-print(summary(with(pooled_model, lmer(Reaction ~ Days + (Days | Subject)))))
-
-```
-
----
-
-```{r}
-# Load the sleepstudy dataset
-data(sleepstudy)
+```{r, message=FALSE,warning=FALSE}
 library(broom.mixed)
-library(tidyr)
-# Introduce missing data for demonstration purposes
-set.seed(42)
-sleepstudy$Reaction[sample(1:nrow(sleepstudy), 30)] <- NA
-
-# Perform Multiple Imputation
-imputed_data <- mice(sleepstudy, m = 5, method = "pmm", seed = 123, print = FALSE)
+mice.fit <- with(data.mice, lmer(cd4 ~ time + (1 | id)))
+summary(pool(mice.fit))
 ```
 
 ---
 
-```{r}
-# Extract the models from each imputed dataset and get tidy estimates
-tidy_estimates <- lapply(1:5, function(i) {
-  complete_data <- complete(imputed_data, action = i)
-  model <- lmer(Reaction ~ Days + (Days | Subject), data = complete_data)
-  tidy(model)
-})
-```
----
-
-```{r}
-# Combine tidy estimates using bind_rows
-pooled_tidy_estimates <- bind_rows(tidy_estimates)
-
-# Print the pooled tidy summary of the model
-print(pooled_tidy_estimates)
-```
----
-
-
-Now we can extract the completed dataset using the complete() function. 
+- Now we can extract the completed dataset using the complete() function. 
 
 ```{r, warning=FALSE, message=FALSE}
-#library(tidyr)
-#impdata <- mice::complete(impData, action = "long", inc = F)
-
-#View(airquality)
+library(tidyr)
+impdata <- mice::complete(data.mice, action = "long", inc = F)
+#View(impdata)
 ```
 
-The missing values have been replaced with the imputed values in the first of the five datasets. If you wish to use another one, just change the second parameter in the <span style="color:red">complete()</span> function.
-
----
-
-## con't
-
-```{r, warning=F, message=FALSE, fig.width=6, fig.height=3}
-#densityplot(impData)
-```
-
-- The density of the imputed data for each imputed dataset is shown in magenta while the density of the observed data is shown in blue.
-
----
-
-## con't
-
-**Pooling**
-
-- Suppose that the next step in our analysis is to fit a linear model to the data.
-- You may ask what imputed dataset to choose.
-- The mice package makes it easy to fit a model to each of the imputed datasets and then pool the results together
-
-```{r}
-# pool(with(impData, lm(Temp~ Ozone+ Solar.R+Wind)))
-#summary(fit)
-# summary(pool(fit))
-# pool.r.squared(fit, adjusted = TRUE)
-```
+- The missing values have been replaced with the imputed values in the first of the five datasets. 
 
 ---
 
@@ -3656,147 +3620,4 @@ The missing values have been replaced with the imputed values in the first of th
 - **`mice`** in R (by Stef van Buuren and collaborators) 
 - SPSS **`(Analyze > Multiple Imputation)`**
 - STATA  **mi `estimate`**
-
----
-
-
-
-
-## Multiple Imputation
-
-- Multiply impute "m" pseudo-complete data sets, typically using a small number of imputations (e.g., 5 < m < 10).
-
-- Combine the inferences from each of the m data sets to acknowledge the uncertainty in the imputation process and the missing data mechanism.
-
-## Multiple Imputation: Combining Inferences
-
-- Combine m sets of parameter estimates to provide a single estimate of the parameter of interest.
-
-- Combine uncertainties to obtain valid standard errors.
-
-- Within-imputation variance and between-imputation variance.
-
----
-
-## Multiple Imputation versus Likelihood Analysis when Data are MAR
-
-- Both multiple imputation and likelihood analysis are valid when data are MAR.
-
-- The choice between them depends on the efficiency and complexity of the models.
-
-## What if You Doubt the MAR Assumption?
-
-- Methods for Non-MAR (NMAR) data exist, but they require information and assumptions on pr(Missing I observed, unobserved).
-
-- Sensitivity analysis can assess the stability of findings under various scenarios, setting bounds on the form and strength of the dependence.
-
----
-
-
-
-
-
----
-
-First, make sure you have the required packages installed:
-
-```{r}
-#install.packages("lme4")     # For the sleepstudy dataset
-#install.packages("geepack")  # For weighted GEE
-#install.packages("mice")     # For multiple imputation
-```
-
-Now, let's load the required libraries and simulate some missing data:
-
-```{r}
-library(lme4)
-library(geepack)
-library(mice)
-
-# Load the sleepstudy dataset
-data("sleepstudy")
-set.seed(42)
-
-# Simulate missing data (replace 10% of values with NA)
-sleepstudy_miss <- sleepstudy
-n <- nrow(sleepstudy_miss)
-sleepstudy_miss$Reaction[sample(n, n * 0.1)] <- NA
-```
-
-Next, we'll use the weighted GEE approach and multiple imputation for comparison:
-
-```{r}
-# Weighted GEE approach
-# Assuming MAR (missing at random) mechanism, we can use inverse probability weighting
-
-# Create a missing indicator variable
-sleepstudy_miss$MissingReaction <- ifelse(is.na(sleepstudy_miss$Reaction), 1, 0)
-
-# Fit a logistic regression model to predict the probability of missingness
-logit_model <- glm(MissingReaction ~ Days + Subject, data = sleepstudy_miss, family = binomial())
-
-# Calculate the inverse probability weights
-sleepstudy_miss$Weights <- ifelse(is.na(sleepstudy_miss$Reaction), 1 / predict(logit_model, type = "response"), 1)
-
-# Fit the GEE model using the weights
-gee_model <- geeglm(Reaction ~ Days, data = sleepstudy_miss, id = Subject, corstr = "exchangeable", weights = Weights)
-
-# Print the GEE model summary
-summary(gee_model)
-```
-
-Now, let's use multiple imputation to handle missing data:
-
-```{r}
-# Multiple Imputation with mice package
-# Here, we'll use predictive mean matching to impute the missing values
-
-# Set the number of imputations
-n_imputations <- 5
-
-# Create the imputation model
-imputation_model <- mice(sleepstudy_miss, method = "pmm", m = n_imputations)
-
-# Perform the imputation
-imputed_data <- complete(imputation_model, action = "long")
-```
-
-# Multiple Imputation with mice package
-# Here, we'll use predictive mean matching to impute the missing values
-
-# Set the number of imputations
-```{r}
-n_imputations <- 5
-
-# Create the imputation model
-imputation_model <- mice(sleepstudy_miss, method = "pmm", m = n_imputations)
-
-# Perform the imputation
-imputed_data <- complete(imputation_model, action = "long")
-
-# Initialize a list to store coefficient estimates from each imputed dataset
-gee_coefficients <- list()
-
-# Fit GEE on each imputed dataset and extract coefficients
-for (i in 1:n_imputations) {
-  imputed_dataset <- imputed_data[imputed_data$.imp == i, ]
-  gee_model <- geeglm(Reaction ~ Days, data = imputed_dataset, id = Subject, corstr = "exchangeable")
-  gee_coefficients[[i]] <- coef(gee_model)
-}
-
-# Combine the results from multiple imputed datasets by averaging the coefficients
-combined_results <- exp(rowMeans(do.call(rbind, gee_coefficients)))
-```
-
-
-```{r}
-# Print the combined results
-print(combined_results)
-```
-
-In this example, we compared the results of the weighted GEE approach with multiple imputation using predictive mean matching. Depending on the complexity of the dataset and the nature of missingness, you may need to adjust the methods or assumptions accordingly.
-
-Keep in mind that handling missing data can be complex, and the specific approach you choose should be based on careful consideration of your data and research question. Additionally, the simulation of missing data in this example is for illustrative purposes; in real-world scenarios, you would work with actual missing data from your dataset.
-
----
 
