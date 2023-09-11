@@ -158,9 +158,20 @@ The goal of this training is to:
 
 - Statistical computing packages: R, Stata and SAS
 
+
+
+---
+class: inverse,  middle
+
+# Day 1
+
+## Continuous Longitudinal Data
+ 
+ * Introduction to longitudinal data analysis
+ * Motivational Examples
+ 
 ---
 
-### Day 1: Continuous Longitudinal Data
 
 #### Introduction to longitudinal data analysis
   
@@ -275,6 +286,7 @@ Indonesian children’s health study (ICHS)
    - Not everyone needs the same rigid data collection schedule.
    - Not everyone needs the same number of measurements—can use all cases, even those with just one measurement!
 
+
 - You can identify temporal patterns in the data.
 
    - Does the outcome increase, decrease, or remain stable over time?
@@ -376,7 +388,6 @@ print(output)
 - Measurements were taken at seven time points from each child, resulting in a maximum of seven measurements per subject.
 - For our purpose, we will consider the variable weight. 
 - Due to a variety of reasons, 80.7% continues up to the end of the study.
-- The profile plot is produced by using the following R code.
 ]
 
 ---
@@ -411,6 +422,7 @@ xyplot(income ~ year , psid, type="l", subset=( person < 20),strip=TRUE)
 - In the PSID dataset, some individuals have a slowly increasing income, while others have more erratic incomes.
 - There is small variation at the beginning compared to the end.
 - Income may possibly vary by sex, so we may need profile plots by sex.
+
 ---
 
 **PSID: Profile of Income by Sex**
@@ -467,8 +479,10 @@ plot(age1, mean1, type="l",ylim=c(20,30), xlab="age", ylab=" The mean distance",
 ```
 
 - The relationship between age and distance appears to be linear.
+
 - It appears that there is a linear growth pattern.
-- The mean profile for males is higher than that of females.
+
+
 ---
 
 #### Cross-sectional versus longitudinal data
@@ -476,7 +490,9 @@ plot(age1, mean1, type="l",ylim=c(20,30), xlab="age", ylab=" The mean distance",
 Cross-sectional data and longitudinal data are two primary types of data used in statistical analysis:
 
 - Cross-sectional data: Collected at a specific point in time and involves observations of different individuals at that particular time.
+
 - Longitudinal data: Collected over an extended period, involving repeated observations of the same individuals over time.
+
 ---
 
 #### t-test example
@@ -497,12 +513,10 @@ Cross-sectional data and longitudinal data are two primary types of data used in
 library(tidyverse)
 before <- c(130, 122, 124, 104, 112, 101, 121, 124, 115, 102, 98, 119, 106, 107, 100)
 after <- c(125, 121, 121, 106, 101, 85, 98, 105, 103, 98, 90, 98, 110, 103, 82)
-data <- data.frame(
-  group = rep(c("Before", "After"), each = 15),
+data <- data.frame( group = rep(c("Before", "After"), each = 15),
   dbp = c(before, after))
-paired <- data %>% group_by(group) %>%
-  summarize(Mean = mean(dbp),  N = n(),Std_Deviation = sd(dbp), 
-            Std_Error_Mean = sd(dbp)/sqrt(n()))
+paired <- data %>% group_by(group) %>%summarize(Mean = mean(dbp),  N = n(),
+      Std_Deviation = sd(dbp), Std_Error_Mean = sd(dbp)/sqrt(n()))
 print(paired)
 ```
 
@@ -515,6 +529,7 @@ $d_i = Y_{i1}-Y_{i2}, i = 1, 2, ..., 15$
 - Testing for treatment effect: Assesses if the average difference equals zero.
 - Paired observations: The simplest case of longitudinal data
 - Much variability between subjects
+
 ---
 
 
@@ -752,6 +767,7 @@ knitr::include_graphics("Image/sesame_prof.png")
 ```
 - Three years average yield over the three locations by thirteen genotypes
 - Sesame Data: Profile plot by Year and Location
+
 ---
 
 #### Sesame Data: Profile plot by Year and Location
@@ -1083,6 +1099,7 @@ plot(age1, mean1, type = "l", xlab = "Age", ylab = "Mean Weight", lwd = 2,
 interaction.plot(Infant$age, sex, Infant$weight, fun = mean, 
                  col = c("red", "blue"), xlab = "Age", ylab = "Weight", las = 1)
 ```
+
 ---
 
 #### Exploring the <span style="color:blue">random effects</span>
@@ -1120,7 +1137,7 @@ The formula weight ~ age | ind specifies that we want to model the weight of inf
 - The <span style="color:purple">pairs method</span> provides one view of the random effects covariance
   structure.
 - To identify outliers-points outside the estimated probability contour
-  at <span style="color:red">level 1-id/2</span> will be marked in the plot, we use the R function.
+  at <span style="color:red">level $1-\alpha/2$</span> will be marked in the plot, we use the R function.
 
 - We see that <span style="color:red">subject 29</span> has high slope.
 
@@ -1154,6 +1171,7 @@ The formula weight ~ age | ind specifies that we want to model the weight of inf
 interaction.plot(Infant$age, sex, Infant$weight, fun=var, col=2:3, xlab="age", 
                  ylab="var[wt]", las=1)
 ```
+
 ---
 
 #### <span style="color:blue">Growth data</span>
@@ -1228,7 +1246,7 @@ pmplots::pairs_plot(response1, y = c("d1", "d2", "d3", "d4"), col = "cyan")
 
 ---
 
-### Exploring the Variability of the Observed Data
+#### Exploring the Variability of the Observed Data
 
 - The individual profile plots of the growth data set exhibit substantial variability within and between subjects. 
 
@@ -1245,7 +1263,7 @@ cov(response1)
 
 ---
 
-### Exploring Overall Variability
+#### Exploring Overall Variability
 
 ```{r, warning=FALSE, message=FALSE, fig.align='center', fig.height=5}
 ## Mean evolution profile ##
@@ -1258,7 +1276,7 @@ plot(sort(age1), mean1, type= "l",ylim=c(10,32), xlab="age",
 
 ---
 
-### Variability by Group
+#### Variability by Group
 
 ```{r, message=FALSE, warning=FALSE, fig.align='center', fig.height=5}
 interaction.plot(age, sex, measure, lty=c(1, 2), fun=var,
@@ -1270,19 +1288,19 @@ title(main="The Variance of the Growth Data Set by Sex")
 ---
 class: inverse, middle
 
-# Day 3
+# Day 2
 ### A Model for Longitudinal Data
 
 - Linear Mixed Models (LMM)
 - Hierarchical versus Marginal Model
 
-### Marginal Model: Estimation and Inference
+- Marginal Model: Estimation and Inference
 
-### Inference for the Random Effects
+- Inference for the Random Effects
 
 ---
 
-## <span style="color:blue">Linear Mixed Models</span>
+#### <span style="color:blue">Linear Mixed Models</span>
 
 - **<span style="color:purple">Linear mixed models (LMM)</span>** are models that handle data where observations are not independent.
 
@@ -1302,7 +1320,7 @@ class: inverse, middle
 
 ---
 
-### Types of Effects in Linear Mixed Models
+#### Types of Effects in Linear Mixed Models
 
 **<span style="color:red"> Fixed Effects</span>**
 
@@ -1329,7 +1347,7 @@ class: inverse, middle
 
 ---
 
-### In Practice: Handling Unbalanced Data
+#### In Practice: Handling Unbalanced Data
 
 - Often, data is unbalanced:
   - Unequal number of measurements per subject
@@ -1337,7 +1355,7 @@ class: inverse, middle
 
 - As a result, traditional multivariate regression techniques may not be applicable.
 
-### Subject-Specific Profiles
+#### Subject-Specific Profiles
 
 - Subject-specific longitudinal profiles can be well approximated by linear regression functions.
 
@@ -1349,7 +1367,7 @@ class: inverse, middle
 
 ---
 
-### Stage 1 Model
+#### Stage 1 Model
 
 $$Y_{i} = Z_{i}\beta_{i} + \varepsilon_{i}$$
 
@@ -1364,9 +1382,10 @@ $$Y_{i} = Z_{i}\beta_{i} + \varepsilon_{i}$$
 - Often, $\Sigma_{i} = \color{blue}{\sigma^2 I_{N_{i}}}$.
 
 - This model describes the observed variability within subjects.
+
 ---
 
-### A 2-stage Model 
+#### A 2-stage Model 
 
 - Between-subject variability can now be studied by relating the $\beta_{i}$ to known covariates.
 
@@ -1381,7 +1400,7 @@ $$\beta_{i} = K_{i}\beta + b_{i}$$
   
 ---
 
-### The General Linear Mixed-effects Model
+#### The General Linear Mixed-effects Model
 
 - A 2-stage approach can be performed explicitly in the analysis.
 
@@ -1474,7 +1493,7 @@ knitr::include_graphics("Image/fig12.png")
 
 ---
 
-### Source of random variation
+#### Source of random variation
 
 - $Y_i = X_i\beta + Z_i b_i + \epsilon_i$
 - $Y_i = X_i\beta + Z_i b_i + \epsilon_{(1)i} + \epsilon_{(2)i}$
@@ -1501,7 +1520,7 @@ knitr::include_graphics("Image/fig12.png")
 
 ---
 
-## Model Families
+#### Model Families
 
 - <span style="color: blue;">Marginal (population average) models</span>
 
@@ -1520,7 +1539,7 @@ Each can be
 
 ---
 
-## Model families
+#### Model families
 
 <span style="color: blue;">Marginal (population average) models</span>
 
@@ -1541,7 +1560,7 @@ Each can be
 
 ---
 
-### 1. Random intercept model 
+#### 1. Random intercept model 
 
 $$\begin{cases}
     Y_{ij} = \beta_0 + \beta_1t_{ij} + \color{blue}{b_{0i}} + \epsilon_{ij}\\
@@ -1569,7 +1588,7 @@ $$\begin{cases}
 
 ---
 
-### 1. Random intercept model 
+#### 1. Random intercept model 
 
 $$\begin{cases}
     Y_{ij} = \beta_0 + \beta_1t_{ij} + \color{blue}{b_{0i}} + \epsilon_{ij}\\
@@ -1590,7 +1609,7 @@ $$\begin{cases}
 
 ---
 
-### The random intercept model: ICC
+#### The random intercept model: ICC
 
 - Measurements from the same participant share a random effect:
   - Means that marginally, there is a <span style="color: blue;">correlation structure</span>
@@ -1609,7 +1628,7 @@ $$Cov(Y_{ij},Y_{ik}) = \frac{\sigma_b^2}{\sigma_b^2 + \sigma_{\epsilon}^2}$$
 
 ---
 
-### 2. Random Slope Model
+#### 2. Random Slope Model
 
 .pull-left[
 $$\begin{cases}
@@ -1637,7 +1656,7 @@ $$D = \begin{pmatrix} \sigma_{0}^2 & \sigma_{01} \\\\ \sigma_{10} & \sigma_{1}^2
 
 ---
 
-### 2. Random Slope Model
+#### 2. Random Slope Model
 
 - If the covariance $\color{blue}{\sigma_{10} = \sigma_{01}}$ is not restricted:
   - It is called <span style="color: red;">unstructured</span>.
@@ -1656,7 +1675,7 @@ $$D = \begin{pmatrix} \sigma_{0}^2 & \sigma_{01} \\\\ \sigma_{10} & \sigma_{1}^2
 
 ---
 
-### The Random Slope Model: ICC
+#### The Random Slope Model: ICC
 
 - Let's consider two measurements from the same subject:
   - $Y_{ij}$ and $Y_{ik}$, $j \neq k$
@@ -1668,7 +1687,7 @@ $$D = \begin{pmatrix} \sigma_{0}^2 & \sigma_{01} \\\\ \sigma_{10} & \sigma_{1}^2
 
 ---
 
-### Marginal models Vs Subject specific Models
+#### Marginal models Vs Subject specific Models
 
 3. The General Linear Mixed-effects model:
 
@@ -1683,7 +1702,7 @@ $$Y_i/b_i \sim N(\color{red}{X_i\beta + Z_ib_i}, \Sigma_i)$$
 $$b_i \sim N(0, D)$$
 
 ---
-### Marginal models Vs Subject specific Models
+#### Marginal models Vs Subject specific Models
 
 It is also called a <span style="color: blue;">hierarchical model</span>:
 - A model for $Y_i$ given $b_i$
@@ -1699,9 +1718,10 @@ Hence, very specific assumptions are made about the dependence of mean and covar
  - Implied covariance: $\color{red}{V_i = Z_iDZ_i' + \Sigma_i}$
 
 <span style="color: blue;">Note that the hierarchical model implies the marginal, NOT vice versa.</span>
+
 ---
 
-### Marginal models vs subject specific models ... (3)
+#### Marginal models vs subject specific models ... (3)
 
 
 ```{r, out.width='70%', fig.align='center', echo=FALSE}
@@ -1711,18 +1731,44 @@ knitr::include_graphics("Image/fig13.png")
 ---
 class: inverse, middle
 
-## Marginal model: estimation and inference
+#### Marginal model: estimation and inference
 
 - Estimation of the marginal model
  - Introduction
  - Maximum likelihood estimation (MLE)
  - Restricted maximum likelihood estimation (RMLE)
+ 
+- General guidelines for model building
+
+- Estimation and tests for random effects
 
 - Practical: Fitting LMM in R
 
 ---
 
-### Estimation of the marginal model
+#### Recap: The General Linear Mixed effects Model (GLMM)
+
+- GLMM:
+
+$Y_i = X_i\beta + Z_ib_i+ \epsilon_{i}$
+
+where
+ - $b_i \sim N(0,D)$
+ - $\epsilon_{i}\sim N(0,\Sigma_i)$
+ - $b_1, b_2, ..., b_N, \epsilon_{1}, \epsilon_{2}, ..., \epsilon_{N}$ independent
+
+- Terminology:
+
+ - Fixed effects: $\beta$
+ 
+ - Random effects: $b_i$
+ 
+ - Variance components: $𝐷$ and $\Sigma_i$
+
+
+---
+
+#### Estimation of the marginal model
 
 - Recall: GLMM
 
@@ -1767,7 +1813,7 @@ an estimate $\hat{\alpha}$
   
 ---
 
-### Maximum Likelihood Estimation
+#### Maximum Likelihood Estimation (MLE)
 
 - **ML estimation of $V_i$**:
   - Does not take into account that $\beta$ estimated from data.
@@ -1778,35 +1824,24 @@ an estimate $\hat{\alpha}$
 
 ---
 
-### Restricted Maximum Likelihood Estimation (REML)
+#### Restricted Maximum Likelihood Estimation (REML)
 
 - **What’s the difference between ML and REML?**
   - ML estimates of variances are known to be biased in small samples.
   - The simplest case: Sample variance
   
- $$Var(x) = \frac{1}{n - 1} \sum_{i=1}^{n-1} (x_i - \bar{x})^2$$
+ $$Var(x) = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2$$
  
   - To obtain an unbiased estimate, we need to divide by $n-1$ because we estimate the mean
     
       $$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$$
 - The REML estimation is a generalization of this idea.
 
----
-
-- **What’s the difference between ML and REML?**
-  - ML estimates of variances are known to be biased in small samples.
-  
-  - The simplest case: Sample variance
-     $$Var(x) = \frac{1}{n - 1} \sum_{i=1}^{n-1} (x_i - \bar{x})^2$$
-    - To obtain an unbiased estimate, we need to divide by $n - 1$ because we estimate the mean
-       $$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$$
-  - The REML estimation is a generalization of this idea.
-  
-  - It provides unbiased estimates of the parameters in the covariance matrix $V_i$ in small samples.
+- It provides unbiased estimates of the parameters in the covariance matrix $V_i$ in small samples.
 
 ---
 
-### Features of REML estimation:
+#### Features of REML estimation:
 
 - It corrects for the downward bias in the ML parameters.
 
@@ -1820,34 +1855,11 @@ an estimate $\hat{\alpha}$
 
 - Models with different mean structures not comparable.
 
-- Since different observations involved.
+ - Since different observations involved.
 
 ---
 
-### Restricted Maximum Likelihood Estimation (REML)
- 
-ML estimation of $V_i$:
- 
-- Does not take into account that $\beta$ estimated from data
-
-- Does not account for degrees of freedom lost
-
-- Generally results in biased estimation of $V_i$
-
-What’s the difference between ML and REML?
-- ML estimates of variances are known to be biased in small samples
-- the simplest case: Sample variance $Var(x) = \frac{\sum_{i=1}^{n-1} (x_i-\bar{x})^2}{n-1}$
-to obtain an unbiased estimate we need to divide by $n−1$
-because we estimate the mean
-$\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}$
-
-- The REML estimation is a generalization of this idea
-- It provides unbiased estimates of the parameters in the
-covariance matrix $V_i$ in small samples
-
----
-
-### Features of REML estimation
+#### Features of REML estimation
 
 - It corrects for the downward bias in the ML parameters
 
@@ -1855,7 +1867,7 @@ covariance matrix $V_i$ in small samples
 
 - Available in all software that fit marginal and mixed effects models
 
-- The default estimation method in mos'"t software (R, SAS)
+- The default estimation method in most software (R, SAS)
 
 - It works by applying a transformation in the longitudinal outcome $𝑌$ based on the chosen structure of the design matrix $𝑋$ (i.e., which predictors you have included in the model)
 
@@ -1864,7 +1876,7 @@ covariance matrix $V_i$ in small samples
 
 ---
 
-### ML versus REML
+#### ML versus REML
 
 - Both are based on the likelihood principle, which has the properties of consistency, asymptotic normality, and efficiency.
 
@@ -1877,7 +1889,7 @@ covariance matrix $V_i$ in small samples
 
 ---
 
-### Components of the Linear Mixed Effects Model (LMM)
+#### Components of the linear mixed Effects model (LMM)
 
 - $Y_i = X_i\beta + Z_ib_i+ \epsilon_{i}$
 
@@ -1894,7 +1906,7 @@ the covariance structure more parsimoniously.
 
 ---
 
-## Fitting Marginal Models in R
+#### Fitting marginal models in R
 
 - **R>** The following code fits a marginal model for the growth data with a compound symmetry correlation structure:
 
@@ -1904,13 +1916,13 @@ gls.Symm <- gls(distance ~ Sex * I(age - 11), data = growth,
                 weights = varIdent(form = ~1|age))
 ```
 
-- The Restricted Maximum Likelihood (REML) method is commonly used as the default estimation approach for the Generalized Least Squares (gls).
+- The Restricted Maximum Likelihood (REML) method is commonly used as the default estimation approach for the Generalized Least Squares (GLS).
 
 ---
 
-### Covariance Matrix
+#### Covariance matrix ... (1)
 
-Variances , covariances and correlations
+Variances, covariances and correlations
 
 - variance measures how far a set of numbers is spread out (always positive)
 
@@ -1923,33 +1935,26 @@ Variances , covariances and correlations
 - Mostly used appropriate for the research question under study– independent, compound symmetry or exchangeable, autoregressive, unstructured.
 
 ---
-### Covariance Matrix
+#### Covariance matrix ... (2)
 
 ```{r, out.width='60%', fig.align='center', echo=FALSE}
 knitr::include_graphics("Image/workcorr.png")
 ```
 
 
-1. Independent Covariance Structure
-
-- assumes that the measurements are<span style="color: red;"> uncorrelated.</span> i.e., no linear relationship between them.
-
-2. Compound Symmetry Covariance Structure
-
-- assumes that all correlations between measurements are <span style="color: red;">equal.</span>  
-
-3. Autoregressive Covariance Structure
-
-- assumes that<span style="color: red;">correlations decrease as the time interval between measurements increases.</span>   
-      - As the time interval increases, the correlation decreases exponentially.
-
-4. Unstructured Covariance Structure
-
-- <span style="color: red;">makes no assumptions about the correlations between measurements.</span>  
+- Independent covariance structure
+ - assumes that the measurements are<span style="color: red;"> uncorrelated.</span> i.e., no linear relationship between them.
+- Compound symmetry covariance structure
+ - assumes that all correlations between measurements are <span style="color: red;">equal.</span>  
+- Autoregressive covariance structure
+ - assumes that <span style="color: red;">correlations decrease as the time interval between measurements increases.</span>   
+    - As the time interval increases, the correlation decreases exponentially.
+- Unstructured covariance structure
+ - <span style="color: red;">makes no assumptions about the correlations between measurements.</span>  
 
 ---
 
-### Example Code
+#### Example code
 
 ```{r, eval=FALSE}
 
@@ -1973,7 +1978,7 @@ fit_un <- lme(response ~ time, random = ~ 1 | subject,
 
 ---
 
-### Model Building
+#### Model building
 
  - We have seen that marginal models consist of two parts:
 
@@ -1986,7 +1991,8 @@ fit_un <- lme(response ~ time, random = ~ 1 | subject,
 
 
 ---
-### General guidelines for model building
+
+#### General guidelines for model building
 
 - Exploratory data analysis Descriptive statistics, individual group
 profiles, plots
@@ -2006,7 +2012,7 @@ profiles, plots
 
 ---
 
-## Fitting Linear Mixed Models in R
+#### Fitting linear mixed models in R ... further details
 
 - There are two packages in R for fitting multilevel models
 
@@ -2024,7 +2030,7 @@ profiles, plots
 
 ---
 
-## Model: Jimma infant data
+#### Model: Jimma infant data
 
 $$W_{ij} = \beta_0 + b_{0i} + \beta_1S_i + (\beta_2 + b_{1i})A_{ij} + \beta_3{A_{ij}}^2 + \beta_4S_iA_{ij} + \beta_5{A_{ij}}^2S_i + \varepsilon_{ij}$$
 
@@ -2038,7 +2044,7 @@ $$W_{ij} = \beta_0 + b_{0i} + \beta_1S_i + (\beta_2 + b_{1i})A_{ij} + \beta_3{A_
 
 ---
 
-## Basic components from R
+#### Basic components from R
 
 - The function <span style="color: green;">`lme`</span> under the library <span style="color: green;">`nlme`</span> in R fits:
   - <span style="color: blue;">Linear mixed-effects model</span>
@@ -2057,7 +2063,9 @@ lme(fixed, data, random, correlation, weights, subset,
 - <span style="color: blue;">`random`</span> is an argument to define the random effects portion.
 - <span style="color: blue;">`data`</span> is an optional data frame containing the variables named <span style="color: blue;">`correlation`</span> describing the within-group correlation structure.
 - <span style="color: blue;">`method`</span> is an argument to <span style="color: blue;">`lme`</span> that changes the estimation method.
+
 ---
+
 - <span style="color: blue;">REML</span>: the model is fit by maximizing the restricted log-likelihood.
 - If <span style="color: blue;">ML</span>, the log-likelihood is maximized. The Default is REML.
 
@@ -2079,9 +2087,9 @@ lme(fixed, data, random, correlation, weights, subset,
 **Model:**
 $$D_{ij} = \beta_0 + \beta_1 S_i + \beta_2 A_{0ij} + \beta_4 S_i A_{0ij} + b_{0i} + b_{1i} A_{0ij} + \varepsilon_{ij}$$
 
-- $D_{ij}$: Orthodontic distance of the $i$th child at the $j$th visit.
-- $A_{ij}$: Age of the $i$th child at the $j$th visit, $A_{0ij} = A_{ij} - 8$
-- $S_i$: Sex of the $i$th child (boys = 1, girls = 2)
+- $D_{ij}$: Orthodontic distance of the $i^{th}$h child at the j^{th}$ visit.
+- $A_{ij}$: Age of the $i^{th}$ child at the $j^{th}$ visit, $A_{0ij} = A_{ij} - 8$
+- $S_i$: Sex of the $i^{th}$ child (boys = 1, girls = 2)
 - $b_{0i}$: Random intercept
 - $b_{1i}$: Random slope
 
@@ -2092,21 +2100,26 @@ We want to fit a random intercept model on growth data, and the following code c
 
 ```{r, warning=FALSE, message=FALSE}
 library(nlme)
-growth.fit1 <- lme(fixed = measure ~ sex + sex * age,
+growth$age <- as.numeric(growth$age)
+growth.fit1 <- lme(fixed = measure ~ Sex + Sex * age,
                    data = growth, random = ~ 1 | ind)
 ```
 **Code Explanation:**
 
-- Fixed effect: `fixed = measure ~ sex + sex * age`
-- Name for the data: `data = mydata22`
+- Fixed effect: `fixed = distance ~ Sex + Sex * age`
+- Name for the data: `data = growth`
 - Random intercept: `random = 1 | ind`
 
 For the `growth.fit1` object, `print(growth.fit1)` gives...
+
 ---
+
 ```{r}
 print(growth.fit1)
 ```
+
 ---
+
 **Main <span style="color: blue;">`lme`</span> Methods:**
 
 - <span style="color: blue;">`ACF`</span>: Empirical autocorrelation function of within-group residuals
@@ -2154,7 +2167,7 @@ fixef(growth.fit1)
 - The argument <span style="color: blue;">method=ML</span> requests that estimates be obtained using full maximum likelihood.
 
 ```{r}
-growth.fit2 <-lme(fixed = measure ~ sex+sex*age, method= "ML",
+growth.fit2 <-lme(fixed = measure ~ Sex+Sex*age, method= "ML",
 data = growth, random = ~ 1|ind)
 ```
 
@@ -2163,6 +2176,7 @@ data = growth, random = ~ 1|ind)
 estimation.
 
 - The <span style="color: blue;">intervals growth.fit2</span> command in R will produce the following confidence interval for the parameters of our model.
+
 ---
 ```{r}
 intervals(growth.fit2)
@@ -2190,6 +2204,7 @@ summary(growth.fit2)
 - The estimates displayed are the standard deviations of <span style="color: blue;">between variability</span> $(\sigma_b = 1.74)$ and the standard deviations of <span style="color: blue;">within variability</span> $(\sigma_w = 1.369)$.
 
 - In the <span style="color: blue;">Fixed Effects</span> sections, we have the reported value of the intercept, its estimated standard error, and <span style="color: blue;">Wald test</span> for whether its value is significantly different from zero or not.
+
 ---
 
 **Random Slope Model:**
@@ -2198,11 +2213,11 @@ summary(growth.fit2)
 - Random intercept and slope: `random =∼ age|subject`
 
 ```{r}
-growth.fit2 <- lme(fixed = measure ~ sex + sex * age,
+growth.fit2 <- lme(fixed = measure ~ Sex + Sex * age,
                    data = growth, random = ~ age | ind)
 ```
 
-VarCorr(growth.fit2), variance components can be extracted from the
+*VarCorr(growth.fit2)*, variance components can be extracted from the
 model
 
 ```{r}
@@ -2350,9 +2365,9 @@ $$H_0:
 
 - The hypothesis is:
   $$H_0: L\beta = 0 \ vs \ H_a: L\beta \neq 0$$
-  where <span style="color:blue">$L$</span> is the contrasts matrix.
+  where $L$</span> is the contrasts matrix.
 
-- The numerator df are always equal to the rank of the contrast matrix <span style="color:blue">$L$</span>.
+- The numerator df are always equal to the rank of the contrast matrix $L$.
 
 - Denominator df need to be estimated from the data using methods such as the <span style="color:darkorange">Containment method</span>, <span style="color:darkorange">Satterthwaite approximation</span>, <span style="color:darkorange">Kenward and Roger approximation</span>.
 
@@ -2361,7 +2376,7 @@ $$H_0:
 
 ---
 
-### Notes on Hypothesis Testing for Regression Coefficients:
+#### Notes on Hypothesis Testing for Regression Coefficients:
 
 - Hypothesis testing for the regression coefficients $\beta$:
  
@@ -2382,7 +2397,7 @@ $$H_0:
 
 ---
 
-## Inference for the Variance Components:
+#### Inference for the Variance Components:
 
 - Inference for the <span style="color:green">mean structure</span> is usually of primary interest.
 
@@ -2400,7 +2415,7 @@ $$H_0:
 
 ---
 
-### Likelihood Ratio Test
+#### Likelihood Ratio Test
 
 - After a candidate model is selected, a <span style="color:blue">LRT</span> can be computed by comparing the candidate model with the reduced model.
 
@@ -2414,6 +2429,7 @@ $$H_0:
 
 - Example: for the <span style="color:red">infant survival data</span>, testing whether the **<span style="color:purple">variance components</span>** associated with the **<span style="color:purple">random time effect</span>** are equal to zero is equivalent to testing 
 $$H_0 : d_{12} = d_{22} = 0$$
+
 ---
 
 **<span style="color:red">Case 1: No Random Effects vs One Random Effect</span>**
@@ -2436,6 +2452,7 @@ $$D = \begin{pmatrix} d_{11} & 0 \\ 0 & 0 \end{pmatrix},$$ for $d_{11} > 0$, ver
 ---
 class: inverse,  middle
 
+# Day 3
 
 ## Models for Non-Gaussian Longitudinal Data
  
@@ -2452,14 +2469,14 @@ class: inverse,  middle
 
 - Inferences based on the marginal model do not explicitly assume the presence of <span style="color:blue; font-weight:bold;">random effects</span> representing the natural heterogeneity between subjects.
 
-- The implied marginal model equals: $$\mathbf{Y}_i \sim \mathcal{N}(\mathbf{X}_i\beta, \mathbf{Z}_iD\mathbf{Z}_i' + \Sigma_i.$$
+- The implied marginal model equals: $$\mathbf{Y}_i \sim \mathcal{N}(\mathbf{X}_i\beta, \mathbf{Z}_iD\mathbf{Z}_i' + \Sigma_i).$$
 
 #### Subject-specific models:
 
 - If the aim is to study how subjects change overtime and what characteristics influence such changes.
 
 - Subject-specific models differ from marginal models by the inclusion of parameters specific to the subject.
-$$\mathbf{Y}_i^T \mathbf{b}_i \sim \mathcal{N}(\mathbf{X}_i\beta + \mathbf{Z}_i\mathbf{b}_i, \Sigma_i),$$
+$$\mathbf{Y}_i|\mathbf{b}_i \sim \mathcal{N}(\mathbf{X}_i\beta + \mathbf{Z}_i\mathbf{b}_i,\, \Sigma_i),$$
   where $\mathbf{b}_i \sim \mathcal{N}(0, \mathbf{D}_i).$
 
 ---
@@ -2504,7 +2521,7 @@ $$\log\left(\frac{{\text{odds of success}}}{{1 - \text{odds of success}}}\right)
 
 **Toenail Data**
 
-- **Research question:** **style="color:red">Severity relative to treatment of TDO, coded as <span 0 (not severe) or 1 (severe)</span>**.
+- **Research question:** **<span style="color:red">Severity relative to treatment of TDO, coded as  0 (not severe) or 1 (severe)</span>**.
 
 - The question of interest was whether the **<span style="color:blue">percentage of severe infection decreased</span>** over time, and whether that evolution was different for the **<span style="color:blue">two treatment groups</span>**:
  
@@ -2536,7 +2553,8 @@ toenail %>% select(time, treatn) %>%
 
 
 ```{r}
-glm(formula = y ~ treatn * time, family = binomial, data = toenail)
+fit <- glm(formula = y ~ treatn * time, family = binomial, data = toenail)
+summary(fit)$coefficients
 ```
 
 - $\beta_3 = -0.078$ is the interaction effect.
@@ -2695,7 +2713,7 @@ library(geepack)
 library(broom)
 # Fit the GEE models
 fit1 <- geeglm(y ~ treatn + time + treatn*time, id = idnum, data = toenail,
-               family = binomial, corstr = "exchangeable", scale.fix = TRUE)
+               family = binomial(link = "logit"), corstr = "exchangeable", scale.fix = TRUE)
 fit2 <- update(fit1, corstr = "ar1")
 fit3 <- update(fit2, corstr = "unstructured")
 
@@ -3080,7 +3098,7 @@ $$\text{logit}(\pi_{ij}) = \color{blue}{\beta_0} + \color{green}{\beta_1 Age_{ij
 
 #### Random intercept and slope model:
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 fitGLMMSlope <- glmer(BMIBIN~ sex + age + sex*age + (1+age|ind),
 data = Infant, family = binomial(link = "logit"))
 print(round(summary(fitGLMMSlope)$coefficients, 3))
@@ -3115,7 +3133,9 @@ print(VarCorr(fitGLMMSlope))
 ---
 class: inverse,  middle
 
-## Day 4: Missing Data Management
+# Day 4
+
+## Missing Data Management
 
 * What is missing data 
    – definition, patterns, mechanisms (MCR, MR, NMR)
@@ -3630,4 +3650,6 @@ impdata <- mice::complete(data.mice, action = "long", inc = F)
 - **`mice`** in R (by Stef van Buuren and collaborators) 
 - SPSS **`(Analyze > Multiple Imputation)`**
 - STATA  **mi `estimate`**
+
+
 
