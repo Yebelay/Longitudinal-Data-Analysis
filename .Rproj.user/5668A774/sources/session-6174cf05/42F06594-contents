@@ -1,0 +1,88 @@
+---
+title: |
+     <span style="color:blue"> <span style = 'font-size: 120%;'>Longitudinal Data Analysis </span>
+
+author: '<span style="color:red"> <span style = "font-size: 120%;">Anteneh Tessema and Yebelay Berehan </span>'
+  
+institute: |
+           <span style = 'font-size: 100%;'>  <span style="color:blue">Ethiopian Public Health Institute (EPHI) 
+           National Data Management Center for Health (NDMC)</span>
+           
+date: "**August 24-27, 2023**"
+      
+title-slide-attributes:
+  data-background-image: ldaa.jpeg
+ # data-background-size: stretch
+  data-background-opacity: "2.5"
+  data-background-color: "#001E4E"
+format: 
+  revealjs:
+    slide-number: true
+    #logo: logo-title-slide.png
+    footer: "[?](https://github.com/Yebelay)&nbsp;&nbsp;&nbsp;"
+    theme: custom.scss
+    code-link: true
+    code-fold: show
+    code-tools: true
+    highlight-style: github
+  #  preview-links: auto
+    chalkboard: 
+      boardmarker-width: 3
+    multiplex: true
+from: markdown+emoji
+execute:
+  echo: true
+---
+
+
+
+##	Topics to be covered 
+
+### Day 1: Continuous Longitudinal Data
+
+  -  [Objectives] {style="color:red;"}
+  -  [Introduction to longitudinal data analysis] {style="color:red;"}
+  -  [Features of longitudinal data] {style="color:red;"}
+  -  [Motivating examples] {style="color:red;"}
+  -  [Cross-sectional vs longitudinal data] {style="color:red;"}
+  -  [Simple methods] {style="color:red;"}
+  -  [Exploratory data analysis] {style="color:red;"}
+  
+### Day 2: Modelling of Longitudinal Data
+
+  - Linear Mixed Effects Models
+  - Marginal Models
+  - Estimation of Marginal model
+ 
+##	Topics to be covered  
+
+### Day 3: Methods for Discrete Data {style="color:purple;"}
+  *  [Generalized Estimating Equations (GEE)] {style="color:blue;"}
+  *  [Generalized Linear Mixed Models (GLMM)] {style="color:blue;"}
+ 
+### [Day 4: Addressing Missing Data in Longitudinal Studies] {style="color:purple;"}
+  * Types of Missing Data Mechanisms (MCR, MR, NMR)
+  * Handling Missing Data: Multiple Imputation
+  * Handling Missing Data: Weighted GEE
+
+---
+
+## Goal of the training
+
+The goal of this training is to:
+
+- Provide an overview of fundamental statistical models and methods for the analysis of **longitudinal data**, including key theoretical results presented.
+- Focus on the practical implementation of these methods in **R**.
+- Help **trainees** gain a comprehensive understanding of the properties and use of modern methods for **longitudinal data analysis**.
+- Enable trainees to pose scientific questions within the context of appropriate statistical models and **carry out and interpret analyses effectively**.
+
+---
+
+## Primary Objectives
+
+- Understand how longitudinal data differs from cross-sectional data.
+- Explain the consequences of ignoring correlated observations.
+- Appreciate the merits of longitudinal data analysis.
+- Apply graphical techniques to explore repeated/dependent/clustered data.
+- Discuss different model families.
+- Analyze and interpret results from longitudinal studies.

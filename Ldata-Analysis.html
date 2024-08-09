@@ -356,7 +356,7 @@ Indonesian children’s health study (ICHS)
 - Measurements were taken at seven time points from each child.
 
 
-```r
+``` r
 library(readxl)
 Infant &lt;- read_xls("Data/Infant.xls")
 Infant$sex &lt;- factor(Infant$sex, levels= c(1, 0), labels= c("male", "female"))
@@ -365,7 +365,7 @@ Infant$sex &lt;- factor(Infant$sex, levels= c(1, 0), labels= c("male", "female")
 ---
 
 
-```r
+``` r
 library(dplyr)
 output &lt;- table(Infant$age) %&gt;%
   as.data.frame() %&gt;%
@@ -419,7 +419,7 @@ The PSID dataset raises the following questions:
 **PSID: Profile Plots for 20 Subjects**
 
 
-```r
+``` r
 library(faraway);library(lattice)
 data(psid)
 mypsid&lt;-subset (psid, (subset=(person &lt;4)))
@@ -438,7 +438,7 @@ xyplot(income ~ year , psid, type="l", subset=( person &lt; 20),strip=TRUE)
 **PSID: Profile of Income by Sex**
 
 
-```r
+``` r
 xyplot(income ~ year | sex, psid, type="l", subset=( person &lt; 500),strip=TRUE)
 ```
 
@@ -469,7 +469,7 @@ xyplot(income ~ year | sex, psid, type="l", subset=( person &lt; 500),strip=TRUE
 **The Orthodontic Growth Data: Individual Profiles by Sex**
 
 
-```r
+``` r
 library(readr); library(dplyr)
 growth &lt;- read_csv("Data/growth2.csv") 
   growth$age &lt;- as.factor(growth$age); 
@@ -488,7 +488,7 @@ growth &lt;- read_csv("Data/growth2.csv")
 **The Orthodontic Growth Data: Mean Distance Profile by Sex**
 
 
-```r
+``` r
 mean1&lt;-tapply(growth$measure, growth$age, mean)
 age1&lt;-as.numeric(unique(growth$age)) %&gt;% sort()
 plot(age1, mean1, type="l",ylim=c(20,30), xlab="age", ylab=" The mean distance", 
@@ -529,7 +529,7 @@ Cross-sectional data and longitudinal data are two primary types of data used in
 ---
 
 
-```r
+``` r
 library(tidyverse)
 before &lt;- c(130, 122, 124, 104, 112, 101, 121, 124, 115, 102, 98, 119, 106, 107, 100)
 after &lt;- c(125, 121, 121, 106, 101, 85, 98, 105, 103, 98, 90, 98, 110, 103, 82)
@@ -623,7 +623,7 @@ Conclusion:
 
 - 
 
-```r
+``` r
 # Using pivot_wider 
 wide_data &lt;- long_data %&gt;%
   pivot_wider(names_from = Time, 
@@ -1066,7 +1066,7 @@ Research question: &lt;span style="color:red;"&gt;How does weight change over ti
 The individual profiles support a &lt;span style="color:purple;"&gt;random-intercepts model&lt;/span&gt;
 
 
-```r
+``` r
 attach(Infant); library(lattice)
 mydata1&lt;-as.data.frame(Infant)
 xyplot(weight ~ factor(age), group = ind, lty=1 ,  
@@ -1095,7 +1095,7 @@ xyplot(weight ~ factor(age), group = ind, lty=1 ,
 The mean profile can be plotted using the following R code:
 
 
-```r
+``` r
 mean1&lt;-tapply(Infant$weight, Infant$age, mean, na.rm=T)
 age1&lt;-as.numeric(unique(Infant$age))
 plot(age1, mean1, type = "l", xlab = "Age", ylab = "Mean Weight", lwd = 2, 
@@ -1110,7 +1110,7 @@ plot(age1, mean1, type = "l", xlab = "Age", ylab = "Mean Weight", lwd = 2,
 
 - The mean profiles by sex:
 
-```r
+``` r
 interaction.plot(Infant$age, sex, Infant$weight, fun = mean, 
                  col = c("red", "blue"), xlab = "Age", ylab = "Weight", las = 1)
 ```
@@ -1135,7 +1135,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun = mean,
 
 -The data was fitted this for each subject as follows:
 
-```r
+``` r
 library(nlme)
 fit &lt;- lmList(weight ~ age | ind, Infant)
 fit
@@ -2188,7 +2188,7 @@ The formula weight ~ age | ind specifies that we want to model the weight of inf
 - Hence, the &lt;span style="color:purple"&gt;same variance structure&lt;/span&gt; may be assumed for both groups.
 
 
-```r
+``` r
 interaction.plot(Infant$age, sex, Infant$weight, fun=var, col=2:3, xlab="age", 
                  ylab="var[wt]", las=1)
 ```
@@ -2206,7 +2206,7 @@ interaction.plot(Infant$age, sex, Infant$weight, fun=var, col=2:3, xlab="age",
 - The individual profiles support a &lt;span style="color:red"&gt;random-intercepts model&lt;/span&gt;.
 
 
-```r
+``` r
 xyplot(measure ~ factor(age) | sex, group = ind, data = growth, 
        main="Individual profile plot by sex",xlab = "Age", ylab = "measure", 
        type = "a", lines = TRUE)
@@ -2228,7 +2228,7 @@ Hence, a linear mean with &lt;span style="color:red"&gt;random intercept and slo
 
 For balanced data, averages can be calculated for each occasion separately, and standard errors for the means can be added.
 
-```r
+``` r
 attach(growth)
 mean1&lt;-tapply(measure, age, mean)
 age1&lt;-sort(as.numeric(unique(age)))
@@ -2243,7 +2243,7 @@ plot(age1, mean1, type= "l",ylim=c(20,30), xlab="age", ylab=
 ---
 
 
-```r
+``` r
 ##### R-code for Correlation matrix ####
 d1&lt;-measure[age==8]
 d2&lt;-measure[age==10]
@@ -2265,7 +2265,7 @@ Scatter plot matrix for growth data
 
 ---
 
-```r
+``` r
 # Scatter plot matrix
 panel.hist &lt;- function(x, ...)
 {usr &lt;- par("usr"); on.exit(par(usr))
@@ -2282,7 +2282,7 @@ pairs(response1, panel=panel.smooth, cex = 1.5, pch = 16,  bg="light green",
 ---
 
 
-```r
+``` r
 pmplots::pairs_plot(response1, y = c("d1", "d2", "d3", "d4"), col = "cyan")
 ```
 
@@ -2302,7 +2302,7 @@ pmplots::pairs_plot(response1, y = c("d1", "d2", "d3", "d4"), col = "cyan")
 **Covariance Matrix for Growth Data:**
 
 
-```r
+``` r
 cov(response1)
 ```
 
@@ -2319,7 +2319,7 @@ cov(response1)
 #### Exploring Overall Variability
 
 
-```r
+``` r
 ## Mean evolution profile ##
 mean1&lt;-tapply(measure, age, mean)
 age1&lt;-sort(as.numeric(unique(age)))
@@ -2334,7 +2334,7 @@ plot(sort(age1), mean1, type= "l",ylim=c(10,32), xlab="age",
 #### Variability by Group
 
 
-```r
+``` r
 interaction.plot(age, sex, measure, lty=c(1, 2), fun=var,
                  ylab="Distance from Pituitary to Pterygomaxillary Fissure (mm)",
                  xlab="Age", trace.label="Group")
@@ -2965,7 +2965,7 @@ the covariance structure more parsimoniously.
 - **R&gt;** The following code fits a marginal model for the growth data with a compound symmetry correlation structure:
 
 
-```r
+``` r
 gls.Symm &lt;- gls(distance ~ Sex * I(age - 11), data = growth, 
                 correlation = corSymm(form = ~1|Subject),
                 weights = varIdent(form = ~1|age))
@@ -3010,7 +3010,7 @@ Variances, covariances and correlations
 #### Example code
 
 
-```r
+``` r
 library(nlme)
 # Independent covariance structure
 fit_i &lt;- lme(response ~ time, random = ~ 1 | subject, 
@@ -3108,7 +3108,7 @@ profiles, plots
 - The command &lt;span style="color: green;"&gt;`lme`&lt;/span&gt; in R is as follows:
 
 
-```r
+``` r
 lme(fixed, data, random, correlation, weights, subset, 
     method, na.action, control, contrasts = NULL, keep.data = TRUE)
 ```
@@ -3153,7 +3153,7 @@ lme(fixed, data, random, correlation, weights, subset,
 We want to fit a random intercept model on growth data, and the following code can be used:
 
 
-```r
+``` r
 library(nlme)
 growth$age &lt;- as.numeric(growth$age)
 growth.fit1 &lt;- lme(fixed = measure ~ Sex + Sex * age,
@@ -3170,7 +3170,7 @@ For the `growth.fit1` object, `print(growth.fit1)` gives...
 ---
 
 
-```r
+``` r
 print(growth.fit1)
 ```
 
@@ -3218,7 +3218,7 @@ print(growth.fit1)
 The command `coef(growth.fit1)` in R produced;
 
 
-```r
+``` r
 coef(growth.fit1)
 ```
 
@@ -3255,7 +3255,7 @@ coef(growth.fit1)
 ---
 Command fixef (Ortho.fit1), the following output is produced
 
-```r
+``` r
 fixef(growth.fit1)
 ```
 
@@ -3278,7 +3278,7 @@ fixef(growth.fit1)
 - The argument &lt;span style="color: blue;"&gt;method=ML&lt;/span&gt; requests that estimates be obtained using full maximum likelihood.
 
 
-```r
+``` r
 growth.fit2 &lt;-lme(fixed = measure ~ Sex+Sex*age, method= "ML",
 data = growth, random = ~ 1|ind)
 ```
@@ -3291,7 +3291,7 @@ estimation.
 
 ---
 
-```r
+``` r
 intervals(growth.fit2)
 ```
 
@@ -3321,7 +3321,7 @@ intervals(growth.fit2)
 parameters of our model
 
 
-```r
+``` r
 summary(growth.fit2)
 ```
 
@@ -3378,7 +3378,7 @@ summary(growth.fit2)
 - Random intercept and slope: `random =∼ age|subject`
 
 
-```r
+``` r
 growth.fit2 &lt;- lme(fixed = measure ~ Sex + Sex * age,
                    data = growth, random = ~ age | ind)
 ```
@@ -3387,7 +3387,7 @@ growth.fit2 &lt;- lme(fixed = measure ~ Sex + Sex * age,
 model
 
 
-```r
+``` r
 VarCorr(growth.fit2)
 ```
 
@@ -3713,35 +3713,35 @@ class: inverse,  middle
 **Toenail Data**
 
 
-```r
+``` r
 library(readr)
 toenail &lt;- read_csv("Data/Toenail.csv")
 ```
 
 
-```r
+``` r
 library(gtsummary)
 toenail %&gt;% select(time, treatn) %&gt;% 
   tbl_summary(by=treatn) 
 ```
 
-<div id="lhwctscxvs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lhwctscxvs table {
+<div id="uzzkfezxyt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uzzkfezxyt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lhwctscxvs thead, #lhwctscxvs tbody, #lhwctscxvs tfoot, #lhwctscxvs tr, #lhwctscxvs td, #lhwctscxvs th {
+#uzzkfezxyt thead, #uzzkfezxyt tbody, #uzzkfezxyt tfoot, #uzzkfezxyt tr, #uzzkfezxyt td, #uzzkfezxyt th {
   border-style: none;
 }
 
-#lhwctscxvs p {
+#uzzkfezxyt p {
   margin: 0;
   padding: 0;
 }
 
-#lhwctscxvs .gt_table {
+#uzzkfezxyt .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3767,12 +3767,12 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-left-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_caption {
+#uzzkfezxyt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lhwctscxvs .gt_title {
+#uzzkfezxyt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3784,7 +3784,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-bottom-width: 0;
 }
 
-#lhwctscxvs .gt_subtitle {
+#uzzkfezxyt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3796,7 +3796,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-top-width: 0;
 }
 
-#lhwctscxvs .gt_heading {
+#uzzkfezxyt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3808,13 +3808,13 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_bottom_border {
+#uzzkfezxyt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_col_headings {
+#uzzkfezxyt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3829,7 +3829,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_col_heading {
+#uzzkfezxyt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3849,7 +3849,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   overflow-x: hidden;
 }
 
-#lhwctscxvs .gt_column_spanner_outer {
+#uzzkfezxyt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3861,15 +3861,15 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 4px;
 }
 
-#lhwctscxvs .gt_column_spanner_outer:first-child {
+#uzzkfezxyt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lhwctscxvs .gt_column_spanner_outer:last-child {
+#uzzkfezxyt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lhwctscxvs .gt_column_spanner {
+#uzzkfezxyt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3881,11 +3881,11 @@ toenail %&gt;% select(time, treatn) %&gt;%
   width: 100%;
 }
 
-#lhwctscxvs .gt_spanner_row {
+#uzzkfezxyt .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lhwctscxvs .gt_group_heading {
+#uzzkfezxyt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3911,7 +3911,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   text-align: left;
 }
 
-#lhwctscxvs .gt_empty_group_heading {
+#uzzkfezxyt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3926,15 +3926,15 @@ toenail %&gt;% select(time, treatn) %&gt;%
   vertical-align: middle;
 }
 
-#lhwctscxvs .gt_from_md > :first-child {
+#uzzkfezxyt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lhwctscxvs .gt_from_md > :last-child {
+#uzzkfezxyt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lhwctscxvs .gt_row {
+#uzzkfezxyt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3953,7 +3953,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   overflow-x: hidden;
 }
 
-#lhwctscxvs .gt_stub {
+#uzzkfezxyt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3966,7 +3966,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 5px;
 }
 
-#lhwctscxvs .gt_stub_row_group {
+#uzzkfezxyt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3980,15 +3980,15 @@ toenail %&gt;% select(time, treatn) %&gt;%
   vertical-align: top;
 }
 
-#lhwctscxvs .gt_row_group_first td {
+#uzzkfezxyt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lhwctscxvs .gt_row_group_first th {
+#uzzkfezxyt .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lhwctscxvs .gt_summary_row {
+#uzzkfezxyt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3998,16 +3998,16 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 5px;
 }
 
-#lhwctscxvs .gt_first_summary_row {
+#uzzkfezxyt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_first_summary_row.thick {
+#uzzkfezxyt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lhwctscxvs .gt_last_summary_row {
+#uzzkfezxyt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4017,7 +4017,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_grand_summary_row {
+#uzzkfezxyt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4027,7 +4027,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 5px;
 }
 
-#lhwctscxvs .gt_first_grand_summary_row {
+#uzzkfezxyt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4037,7 +4037,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_last_grand_summary_row_top {
+#uzzkfezxyt .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4047,11 +4047,11 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_striped {
+#uzzkfezxyt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lhwctscxvs .gt_table_body {
+#uzzkfezxyt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4060,7 +4060,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_footnotes {
+#uzzkfezxyt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4074,7 +4074,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_footnote {
+#uzzkfezxyt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4083,7 +4083,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 5px;
 }
 
-#lhwctscxvs .gt_sourcenotes {
+#uzzkfezxyt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4097,7 +4097,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#lhwctscxvs .gt_sourcenote {
+#uzzkfezxyt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4105,69 +4105,68 @@ toenail %&gt;% select(time, treatn) %&gt;%
   padding-right: 5px;
 }
 
-#lhwctscxvs .gt_left {
+#uzzkfezxyt .gt_left {
   text-align: left;
 }
 
-#lhwctscxvs .gt_center {
+#uzzkfezxyt .gt_center {
   text-align: center;
 }
 
-#lhwctscxvs .gt_right {
+#uzzkfezxyt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lhwctscxvs .gt_font_normal {
+#uzzkfezxyt .gt_font_normal {
   font-weight: normal;
 }
 
-#lhwctscxvs .gt_font_bold {
+#uzzkfezxyt .gt_font_bold {
   font-weight: bold;
 }
 
-#lhwctscxvs .gt_font_italic {
+#uzzkfezxyt .gt_font_italic {
   font-style: italic;
 }
 
-#lhwctscxvs .gt_super {
+#uzzkfezxyt .gt_super {
   font-size: 65%;
 }
 
-#lhwctscxvs .gt_footnote_marks {
+#uzzkfezxyt .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lhwctscxvs .gt_asterisk {
+#uzzkfezxyt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lhwctscxvs .gt_indent_1 {
+#uzzkfezxyt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lhwctscxvs .gt_indent_2 {
+#uzzkfezxyt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lhwctscxvs .gt_indent_3 {
+#uzzkfezxyt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lhwctscxvs .gt_indent_4 {
+#uzzkfezxyt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lhwctscxvs .gt_indent_5 {
+#uzzkfezxyt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
   <thead>
-    
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;0&lt;/strong&gt;, N = 937&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>0</strong>, N = 937<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
@@ -4176,8 +4175,8 @@ toenail %&gt;% select(time, treatn) %&gt;%
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="label" class="gt_row gt_left">time</td>
-<td headers="stat_1" class="gt_row gt_center"></td>
-<td headers="stat_2" class="gt_row gt_center"></td></tr>
+<td headers="stat_1" class="gt_row gt_center"><br /></td>
+<td headers="stat_2" class="gt_row gt_center"><br /></td></tr>
     <tr><td headers="label" class="gt_row gt_left">    0</td>
 <td headers="stat_1" class="gt_row gt_center">146 (16%)</td>
 <td headers="stat_2" class="gt_row gt_center">148 (15%)</td></tr>
@@ -4214,7 +4213,7 @@ toenail %&gt;% select(time, treatn) %&gt;%
 
 
 
-```r
+``` r
 fit &lt;- glm(formula = y ~ treatn * time, family = binomial, data = toenail)
 summary(fit)$coefficients
 ```
@@ -4232,7 +4231,7 @@ summary(fit)$coefficients
 - This analysis is wrong since we have not taken into account the multiple responses per subject.
 - We have considered 1907 independent observations (residual degrees of freedom + 1).
 
-```r
+``` r
 length(toenail$y)
 ```
 
@@ -4361,7 +4360,7 @@ Where:
 A function that fits GEE to deal with correlation structures arising from repeated measures on individuals, or from clustering as in family data is:
 
 
-```r
+``` r
 gee(formula, family, data, corStructure = "ar1", clusterID, startCoeff, 
     maxit = 20, checks = TRUE, display = FALSE, datasources)
 ```
@@ -4385,7 +4384,7 @@ gee(formula, family, data, corStructure = "ar1", clusterID, startCoeff,
 To fit GEE in R, you need the following packages first: **&lt;span style="color:red"&gt;geepack, wgeesel, MuMIn&lt;/span&gt;**
 
 
-```r
+``` r
 library(geepack)
 library(broom)
 # Fit the GEE models
@@ -4414,7 +4413,7 @@ print(fit1_summary)
 ```
 ---
 
-```r
+``` r
 print(fit2_summary)
 ```
 
@@ -4428,7 +4427,7 @@ print(fit2_summary)
 ## 4 treatn:time   -0.116    0.0550     4.46  0.0346
 ```
 
-```r
+``` r
 print(fit3_summary)
 ```
 
@@ -4443,7 +4442,7 @@ print(fit3_summary)
 ```
 
 
-```r
+``` r
 broom:::confint.geeglm(fit1)
 ```
 
@@ -4467,7 +4466,7 @@ broom:::confint.geeglm(fit1)
 - MuMIn package calculates this statistic
 
 
-```r
+``` r
 #library(MuMIn)
 QIC(fit1, fit2, fit3)
 ```
@@ -4634,7 +4633,7 @@ To overcome this problem, two general types of solutions have been proposed:
 ---
 
 
-```r
+``` r
 library(lme4)
 glmmFit &lt;- glmer(y ~ treatn*time + (1 | idnum), family = binomial(), 
                  data = toenail, nAGQ = 15)
@@ -4662,10 +4661,10 @@ summary(glmmFit)
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -1.65962    0.44596  -3.721 0.000198 ***
-## treatn      -0.12255    0.59379  -0.206 0.836484    
+## (Intercept) -1.65962    0.44595  -3.722 0.000198 ***
+## treatn      -0.12255    0.59377  -0.206 0.836478    
 ## time        -0.40569    0.04619  -8.783  &lt; 2e-16 ***
-## treatn:time -0.15962    0.07222  -2.210 0.027086 *  
+## treatn:time -0.15962    0.07222  -2.210 0.027085 *  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -4683,7 +4682,7 @@ summary(glmmFit)
 - The function that fits GLMMs in &lt;span style="color:blue"&gt;GLMMadaptive&lt;/span&gt; is `mixed_model()`. To fit the same model as we did above with `glmer()`, the code is:
 
 
-```r
+``` r
 library(GLMMadaptive)
 glmmFit2 &lt;- mixed_model(y ~ treatn*time, random = ~ 1 | idnum, 
              family = binomial(), data = toenail, nAGQ = 15)
@@ -4846,7 +4845,7 @@ Exchangeable correlation (or CS)
 
 - using **unstructured** working corelation
 
-```r
+``` r
 fit1 &lt;- geeglm(BMIBIN ~ sex + age + sex * age, id = ind, data = Infant, 
                family = binomial, corstr = "exchangeable", scale.fix = TRUE)
 ```
@@ -4860,7 +4859,7 @@ The logit of `\(\pi_{ij}\)` is modeled as:
 
 `$$\text{logit}(\pi_{ij}) =  \color{blue}{\beta_0} + \color{green}{\beta_1 Age_{ij}} + \color{red}{\beta_2 Gender_i} + \color{purple}{\beta_3 Gender_i Age_{ij}} + \color{magenta}{b_i}$$`
 
-```r
+``` r
 fitGLMM &lt;- glmer(BMIBIN ~ sex + age + sex * age + (1 | ind),
                  data = Infant, family = binomial(link = "logit"), nAGQ = 25)
 #print(round(summary(fitGLMM)$coefficients, 3))
@@ -4904,7 +4903,7 @@ The logit of the probability `\(\pi_{ij}\)` is given by:
 #### Random intercept and slope model:
 
 
-```r
+``` r
 fitGLMMSlope &lt;- glmer(BMIBIN~ sex + age + sex*age + (1+age|ind),
 data = Infant, family = binomial(link = "logit"))
 print(round(summary(fitGLMMSlope)$coefficients, 3))
@@ -4912,20 +4911,20 @@ print(round(summary(fitGLMMSlope)$coefficients, 3))
 
 ```
 ##               Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)     -2.512      0.178 -14.077    0.000
+## (Intercept)     -2.512      0.178 -14.076    0.000
 ## sexfemale       -0.173      0.199  -0.869    0.385
 ## age             -0.026      0.025  -1.038    0.299
 ## sexfemale:age    0.024      0.028   0.874    0.382
 ```
 
-```r
+``` r
 # Extracting variance components for random effects
 print(VarCorr(fitGLMMSlope))
 ```
 
 ```
 ##  Groups Name        Std.Dev. Corr  
-##  ind    (Intercept) 1.90822        
+##  ind    (Intercept) 1.90821        
 ##         age         0.24029  -0.708
 ```
 ---
@@ -5299,7 +5298,7 @@ First lets explore the missing value and pattern using
 
 
 
-```r
+``` r
 library(readr); library(naniar)
 HIVdata &lt;- read_csv("Data/HIVdata.csv")
 #miss_var_summary(HIVdata)
@@ -5317,7 +5316,7 @@ miss_var_table(HIVdata)
 ---
 - We can also look the missing pattern at each time point 
 
-```r
+``` r
 library(dplyr)
 HIVdata %&gt;% select(cd4, time) %&gt;% group_by(time) %&gt;% miss_var_summary()
 ```
@@ -5326,7 +5325,7 @@ HIVdata %&gt;% select(cd4, time) %&gt;% group_by(time) %&gt;% miss_var_summary()
 ## # A tibble: 7 × 4
 ## # Groups:   time [7]
 ##    time variable n_miss pct_miss
-##   &lt;dbl&gt; &lt;chr&gt;     &lt;int&gt;    &lt;dbl&gt;
+##   &lt;dbl&gt; &lt;chr&gt;     &lt;int&gt;    &lt;num&gt;
 ## 1     0 cd4           0      0  
 ## 2     6 cd4          52     15.5
 ## 3    12 cd4          82     24.5
@@ -5343,7 +5342,7 @@ HIVdata %&gt;% select(cd4, time) %&gt;% group_by(time) %&gt;% miss_var_summary()
 .pull-left[
 - **&lt;span style="color: red;"&gt;Before remove na's&lt;/span&gt;**
 
-```r
+``` r
 fit1 &lt;- lmer(cd4 ~ time + (1 | id), 
              data = HIVdata)
 summary(fit1)
@@ -5380,7 +5379,7 @@ summary(fit1)
 .pull-right[
 - **&lt;span style="color: red;"&gt;After removal na's&lt;/span&gt;**
 
-```r
+``` r
 cc_data &lt;- na.omit(HIVdata)
 cc_model&lt;- lmer(cd4 ~time +(1|id), 
               data = cc_data)
@@ -5430,7 +5429,7 @@ summary(cc_model)
 ---
 
 
-```r
+``` r
 library(zoo)
 LOCF_data2 &lt;- na.locf(HIVdata)
 model_locf2 &lt;- lmer(cd4 ~ time + (1 | id), data = LOCF_data2)
@@ -5485,7 +5484,7 @@ summary(model_locf2)
 #### Example
 
 
-```r
+``` r
 library(dplyr)
 # Replace missing values with cd4 means
 imputed_data &lt;- HIVdata %&gt;%  group_by(id) %&gt;%
@@ -5564,7 +5563,7 @@ summary(model_mean_imputed)
 - Let's look at it using the mice() function 
 
 
-```r
+``` r
 library(mice)
 data.mice &lt;- mice(HIVdata, m=5, method = "pmm", printFlag=FALSE, print = FALSE)
 ```
@@ -5582,16 +5581,16 @@ data.mice &lt;- mice(HIVdata, m=5, method = "pmm", printFlag=FALSE, print = FALS
 ---
 
 
-```r
+``` r
 library(broom.mixed)
 mice.fit &lt;- with(data.mice, lmer(cd4 ~ time + (1 | id)))
 summary(pool(mice.fit))
 ```
 
 ```
-##          term   estimate std.error statistic       df      p.value
-## 1 (Intercept) 220.832111 9.2215521  23.94739 54.13070 1.769731e-30
-## 2        time   6.010341 0.3306921  18.17504 24.41684 1.068857e-15
+##          term   estimate std.error statistic        df       p.value
+## 1 (Intercept) 221.572345 8.1197847  27.28796 1175.3427 2.093139e-127
+## 2        time   5.882157 0.2608678  22.54842  343.8085  9.383306e-70
 ```
 
 ---
@@ -5599,7 +5598,7 @@ summary(pool(mice.fit))
 - Now we can extract the completed dataset using the complete() function. 
 
 
-```r
+``` r
 library(tidyr)
 impdata &lt;- mice::complete(data.mice, action = "long", inc = F)
 #View(impdata)
